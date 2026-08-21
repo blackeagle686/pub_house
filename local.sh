@@ -39,7 +39,7 @@ python manage.py collectstatic --noinput
 echo "✅ Setup Complete!"
 
 # If not running on PythonAnywhere, start the dev server
-if [[ "$PWD" != *"pythonanywhere"* ]]; then
+if [[ "$HOSTNAME" != *"pythonanywhere"* && -z "$PYTHONANYWHERE_DOMAIN" && "$USER" != "darklord99" ]]; then
     echo "🌐 Starting local development server..."
     python manage.py runserver 0.0.0.0:8000
 else
