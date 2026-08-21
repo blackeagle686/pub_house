@@ -1,0 +1,146 @@
+/* ==========================================================================
+   Author App Styles (Author List & Author Detail)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Author Hero Section (Detail Page)
+   -------------------------------------------------------------------------- */
+.author-hero { 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03); 
+}
+
+.author-hero-bg-glow { 
+    width: 400px; 
+    height: 400px; 
+    background: radial-gradient(circle, rgba(248,170,39,0.15) 0%, transparent 70%); 
+    position: absolute; 
+    top: -100px; 
+    right: -100px; 
+    border-radius: 50%; 
+}
+
+.author-img { 
+    border: 4px solid var(--white); 
+    transition: transform 0.5s ease; 
+    animation: float 6s ease-in-out infinite; 
+}
+
+.author-img-wrapper:hover .author-img { 
+    transform: scale(1.05); 
+}
+
+/* --------------------------------------------------------------------------
+   Author Books (Detail Page)
+   -------------------------------------------------------------------------- */
+.modern-author-book { 
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    border: 1px solid rgba(248, 170, 39, 0.05); 
+}
+
+.modern-author-book:hover { 
+    transform: translateY(-8px); 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08) !important; 
+}
+
+.author-book-img-wrapper { 
+    position: relative; 
+    border-radius: 0 20px 20px 0; 
+}
+
+.author-book-img { 
+    transition: transform 0.6s ease; 
+}
+
+.modern-author-book:hover .author-book-img { 
+    transform: scale(1.1) rotate(2deg); 
+}
+
+.author-book-overlay { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(17, 17, 17, 0.4); 
+    opacity: 0; 
+    transition: all 0.4s ease; 
+    backdrop-filter: blur(2px); 
+}
+
+.modern-author-book:hover .author-book-overlay { 
+    opacity: 1; 
+}
+
+.author-book-overlay .btn { 
+    transform: scale(0.5); 
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+
+.modern-author-book:hover .author-book-overlay .btn { 
+    transform: scale(1); 
+}
+
+.author-book-btn { 
+    transition: all 0.3s ease; 
+    border-width: 2px; 
+}
+
+.modern-author-book:hover .author-book-btn { 
+    background-color: var(--primary-color); 
+    color: var(--text-dark); 
+    border-color: var(--primary-color); 
+    box-shadow: 0 5px 15px rgba(248, 170, 39, 0.3); 
+}
+
+.category-link { 
+    transition: color 0.3s ease; 
+}
+
+.category-link:hover { 
+    color: var(--primary-color) !important; 
+}
+
+/* --------------------------------------------------------------------------
+   Author Cards (List Page)
+   -------------------------------------------------------------------------- */
+.modern-author-card { 
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+
+.modern-author-card:hover { 
+    transform: translateY(-10px); 
+    box-shadow: 0 15px 35px rgba(248, 170, 39, 0.2) !important; 
+}
+
+.author-img-ring { 
+    transition: transform 0.5s ease; 
+}
+
+.modern-author-card:hover .author-img-ring { 
+    transform: scale(1.1) rotate(5deg); 
+}
+
+.author-action-btn { 
+    transition: all 0.3s ease; 
+}
+
+.modern-author-card:hover .author-action-btn { 
+    background-color: var(--primary-color) !important; 
+    color: #111111 !important; 
+}
+
+/* --------------------------------------------------------------------------
+   Utility & Theme Overrides
+   -------------------------------------------------------------------------- */
+.z-index-2 { 
+    z-index: 2; 
+}
+
+[data-theme="dark"] .author-hero { box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+[data-theme="dark"] .author-img { border-color: #222; }
+[data-theme="dark"] .author-hero-bg-glow { background: radial-gradient(circle, rgba(248,170,39,0.08) 0%, transparent 70%); }
+[data-theme="dark"] .modern-author-book:hover { box-shadow: 0 15px 35px rgba(248, 170, 39, 0.15) !important; }
+[data-theme="dark"] .author-bio { background: #2a2a30 !important; border: 1px solid rgba(255,255,255,0.05) !important; }
+[data-theme="dark"] .bg-light { background-color: #2a2a30 !important; }
+[data-theme="dark"] .modern-search-form { background-color: #2a2a30 !important; }
+[data-theme="dark"] .modern-search-form input { color: #f8f9fa !important; }

@@ -1,0 +1,167 @@
+/* Hero Section */
+.hero-section {
+    background-color: var(--bg-cream);
+    padding: 80px 0 40px;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    overflow: hidden;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.hero-title span {
+    color: var(--primary-color);
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+}
+
+.hero-img {
+    max-width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(248, 170, 39, 0.2);
+    animation: float 6s ease-in-out infinite;
+}
+
+@media (max-width: 991px) {
+    .hero-section {
+        padding: 40px 0;
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+    }
+    .hero-section h1.display-3 {
+        font-size: 2.5rem !important;
+    }
+    .hero-title {
+        font-size: 2rem;
+    }
+    .hero-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+    }
+    .hero-img {
+        max-width: 160px;
+        max-height: 160px;
+        object-fit: contain;
+        margin: 0 auto;
+    }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Search Bar */
+.search-box {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    margin-top: 30px;
+}
+
+.search-box .form-control, .search-box .form-select {
+    border-radius: 8px;
+    border: 1px solid #eee;
+    padding: 12px 15px;
+}
+
+/* Books Section */
+.books-section {
+    padding: 80px 0;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+}
+.section-title::after {
+    content: '';
+    width: 80px;
+    height: 4px;
+    background-color: var(--primary-color);
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.book-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: var(--transition);
+    height: 100%;
+    overflow: hidden;
+}
+.book-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(248, 170, 39, 0.15);
+}
+.book-cover {
+    height: 250px;
+    object-fit: cover;
+    width: 100%;
+    background-color: var(--bg-cream);
+}
+.book-card-body {
+    padding: 20px;
+}
+.book-title {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+.book-rating {
+    color: var(--primary-color);
+    font-size: 0.9rem;
+}
+
+/* About Section */
+.about-section {
+    background-color: var(--bg-cream);
+    padding: 80px 0;
+    border-radius: 30px;
+    margin: 40px 0;
+}
+.about-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-dark);
+}
+.about-text strong {
+    color: var(--text-dark);
+}
+
+/* Bento Grid Styling */
+.bento-card { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease; border: 1px solid rgba(255,255,255,0.1); }
+.bento-card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important; }
+
+.bento-bg { filter: blur(30px) brightness(0.4); transform: scale(1.1); transition: all 0.5s ease; }
+.bento-card:hover .bento-bg { filter: blur(20px) brightness(0.3); transform: scale(1.15); }
+
+.bento-overlay { background: linear-gradient(180deg, rgba(17,17,17,0.1) 0%, rgba(17,17,17,0.9) 100%); }
+
+.bento-cover-wide { height: 220px; object-fit: cover; transform: rotate(-3deg); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.bento-card:hover .bento-cover-wide { transform: rotate(0deg) scale(1.08); box-shadow: 0 15px 30px rgba(0,0,0,0.5) !important; }
+
+.bento-cover-narrow { height: 180px; object-fit: cover; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.bento-card:hover .bento-cover-narrow { transform: translateY(-10px) scale(1.05); box-shadow: 0 15px 30px rgba(0,0,0,0.5) !important; }
+
+.bento-btn { transition: all 0.3s ease; }
+.bento-card:hover .bento-btn { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(248,170,39,0.3) !important; }
+
+.hover-primary:hover { color: var(--primary-color) !important; }
+.z-index-2 { z-index: 2; }

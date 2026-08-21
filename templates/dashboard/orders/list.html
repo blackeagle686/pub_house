@@ -1,0 +1,49 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <h2 class="fw-bold mb-0">إدارة الطلبات</h2>
+    <form method="GET" class="d-flex shadow-sm rounded-pill bg-white overflow-hidden flex-grow-1 mx-md-4" style="max-width: 400px;">
+        <input type="text" name="q" class="form-control border-0 shadow-none ps-3 bg-transparent" placeholder="بحث بمعرف أو اسم العميل..." value="{{ request.GET.q }}">
+        <button class="btn btn-primary border-0 px-4 fw-bold" type="submit"><i class="fas fa-search"></i></button>
+    </form>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <table class="table table-hover mb-0 align-middle">
+        <thead class="bg-light">
+            <tr>
+                <th class="p-3">رقم الطلب</th>
+                <th class="p-3">العميل</th>
+                <th class="p-3">التاريخ</th>
+                <th class="p-3">الإجمالي</th>
+                <th class="p-3">الحالة</th>
+                <th class="p-3">إجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td class="p-3 fw-bold">#{{ order.id }}</td>
+                <td class="p-3">{{ order.user.username }}</td>
+                <td class="p-3">{{ order.created_at|date:"Y-m-d" }}</td>
+                <td class="p-3 text-success fw-bold">{{ order.total_price }} جنيه</td>
+                <td class="p-3">
+                    <select class="form-select form-select-sm w-auto rounded-pill d-inline-block">
+                        <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>قيد المراجعة</option>
+                        <option value="approved" {% if order.status == 'approved' %}selected{% endif %}>مقبول</option>
+                        <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>مشحون</option>
+                        <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>تم التسليم</option>
+                    </select>
+                </td>
+                <td class="p-3">
+                    <a href="{% url 'dashboard:order_update' order.id %}" class="btn btn-sm btn-primary rounded-pill px-3">تحديث الحالة</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="p-4 text-center text-muted">لا يوجد طلبات حالياً.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include 'dashboard/components/pagination.html' %}
+{% endblock %}

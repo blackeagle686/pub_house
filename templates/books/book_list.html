@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block title %}الكتب - دار الأديب{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/book.css">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 px-xl-5 py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">الرئيسية</a></li>
+            {% if request.resolver_match.url_name == 'category_list' %}
+            <li class="breadcrumb-item"><a href="{% url 'books:categories' %}" class="text-decoration-none">التصنيفات</a></li>
+            <li class="breadcrumb-item active" aria-current="page">تصفح القسم</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">الكتب</li>
+            {% endif %}
+        </ol>
+    </nav>
+
+    <!-- Creative Hero Section -->
+    <div class="row mb-5 align-items-center position-relative bg-light rounded-4 p-4 p-md-5 overflow-hidden shadow-sm" style="border: 1px solid rgba(248, 170, 39, 0.1);">
+        <!-- Animated Background Circles -->
+        <div class="bg-circle circle-1" style="width: 300px; height: 300px; top: -50px; right: -50px; opacity: 0.3;"></div>
+        <div class="bg-circle circle-2" style="width: 200px; height: 200px; bottom: 0; left: 0; opacity: 0.2;"></div>
+        
+        <div class="col-md-6 mb-4 mb-md-0 position-relative" style="z-index: 2;">
+            <h1 class="fw-bold mb-3 hero-title" style="font-size: 2.8rem;">
+                {% if request.resolver_match.url_name == 'category_list' %}
+                تصفح <span style="color: var(--primary-color);">القسم</span>
+                {% else %}
+                المكتبة <span style="color: var(--primary-color);">الشاملة</span>
+                {% endif %}
+            </h1>
+            <p class="fs-5 mb-0 hero-subtitle" style="line-height: 1.8;">
+                {% if request.resolver_match.url_name == 'category_list' %}
+                اكتشف أحدث وأهم الإصدارات في هذا القسم، واستمتع بتجربة قراءة لا تُنسى.
+                {% else %}
+                استكشف آلاف العناوين من مختلف التصنيفات الأدبية والعلمية في مكان واحد.
+                {% endif %}
+            </p>
+        </div>
+        <div class="col-md-6 position-relative" style="z-index: 2;">
+            <form action="{% url 'books:search' %}" method="GET" class="modern-search-form d-flex align-items-center bg-white rounded-pill p-2 shadow" style="border: 2px solid rgba(248, 170, 39, 0.2);">
+                <div class="search-icon ps-4 pe-2 text-primary fs-5">
+                    <i class="fas fa-search"></i>
+                </div>
+                <input type="text" name="q" class="form-control border-0 shadow-none bg-transparent fs-5 text-dark" placeholder="ابحث عن كتاب، مؤلف..." value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 ms-1 fw-bold fs-5 shadow-sm">بحث</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Books Grid (Premium Horizontal Layout) -->
+    <div class="row g-4">
+        {% for book in books %}
+        <div class="col-lg-6 col-xl-4">
+            <div class="card border-0 shadow-sm modern-book-card h-100 overflow-hidden" style="border-radius: 24px; background: var(--bg-cream);">
+                <div class="row g-0 h-100 align-items-center flex-row-reverse">
+                    <!-- Book Cover Side -->
+                    <div class="col-4 col-sm-4 position-relative overflow-hidden h-100 book-img-wrapper" style="min-height: 220px;">
+                        {% if book.cover %}
+                            <img src="{{ book.cover.url }}" class="w-100 h-100 book-img" style="object-fit: cover; position: absolute; top: 0; left: 0;" alt="{{ book.title }}">
+                        {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center w-100 h-100 book-img" style="position: absolute; top: 0; left: 0;">
+                                <i class="fas fa-book fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <div class="book-overlay d-flex align-items-center justify-content-center">
+                            <a href="{% url 'books:detail' book.slug %}" class="btn btn-light rounded-circle shadow d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-arrow-left text-primary fs-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Book Details Side -->
+                    <div class="col-8 col-sm-8">
+                        <div class="card-body p-4 p-lg-5 d-flex flex-column justify-content-center h-100">
+                            {% if book.category %}
+                            <div class="mb-2">
+                                <a href="{% url 'books:category_list' book.category.slug %}" class="badge bg-primary bg-opacity-10 text-primary text-decoration-none px-3 py-2 rounded-pill">{{ book.category.name }}</a>
+                            </div>
+                            {% endif %}
+                            
+                            <h3 class="fw-bold text-dark mb-2" style="font-size: 1.4rem;">{{ book.title }}</h3>
+                            
+                            <a href="{% url 'authors:detail' book.author.slug %}" class="text-decoration-none d-block mb-4" style="color: var(--text-muted-readable);">
+                                <i class="fas fa-pen-nib me-2 ms-1 small"></i>{{ book.author.name }}
+                            </a>
+                            
+                            <div class="mt-auto d-flex align-items-center justify-content-between">
+                                {% if book.paperback_price or book.ebook_price %}
+                                    <div class="fw-bold text-success fs-5">
+                                        {% if book.paperback_price %}{{ book.paperback_price }}{% else %}{{ book.ebook_price }}{% endif %} <small class="text-muted fs-6">ج.م</small>
+                                    </div>
+                                {% else %}
+                                    <div class="text-muted small">غير محدد</div>
+                                {% endif %}
+                                <a href="{% url 'books:detail' book.slug %}" class="btn btn-outline-primary rounded-pill px-4 fw-bold">التفاصيل</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <!-- Mock Data -->
+        {% for i in "1234" %}
+        <div class="col-lg-6 col-xl-4">
+            <div class="card border-0 shadow-sm modern-book-card h-100 overflow-hidden" style="border-radius: 24px; background: var(--bg-cream);">
+                <div class="row g-0 h-100 align-items-center flex-row-reverse">
+                    <div class="col-4 col-sm-4 position-relative overflow-hidden h-100 book-img-wrapper" style="min-height: 220px;">
+                        <div class="bg-light d-flex align-items-center justify-content-center w-100 h-100 book-img" style="position: absolute; top: 0; left: 0;">
+                            <i class="fas fa-book fa-3x text-muted"></i>
+                        </div>
+                        <div class="book-overlay d-flex align-items-center justify-content-center">
+                            <a href="#" class="btn btn-light rounded-circle shadow d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-arrow-left text-primary fs-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-8 col-sm-8">
+                        <div class="card-body p-4 p-lg-5 d-flex flex-column justify-content-center h-100">
+                            <div class="mb-2">
+                                <a href="#" class="badge bg-primary bg-opacity-10 text-primary text-decoration-none px-3 py-2 rounded-pill">روايات</a>
+                            </div>
+                            <h3 class="fw-bold text-dark mb-2" style="font-size: 1.4rem;">كتاب رائع جداً</h3>
+                            <a href="#" class="text-decoration-none d-block mb-4" style="color: var(--text-muted-readable);">
+                                <i class="fas fa-pen-nib me-2 ms-1 small"></i>الكاتب المبدع
+                            </a>
+                            <div class="mt-auto d-flex align-items-center justify-content-between">
+                                <div class="fw-bold text-success fs-5">150 <small class="text-muted fs-6">ج.م</small></div>
+                                <a href="#" class="btn btn-outline-primary rounded-pill px-4 fw-bold">التفاصيل</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <h2 class="fw-bold mb-0">إدارة المستخدمين والمؤلفين</h2>
+    <form method="GET" class="d-flex shadow-sm rounded-pill bg-white overflow-hidden flex-grow-1 mx-md-4" style="max-width: 400px;">
+        <input type="text" name="q" class="form-control border-0 shadow-none ps-3 bg-transparent" placeholder="بحث باسم، بريد، أو معرف..." value="{{ request.GET.q }}">
+        <button class="btn btn-primary border-0 px-4 fw-bold" type="submit"><i class="fas fa-search"></i></button>
+    </form>
+    <a href="{% url 'dashboard:user_add' %}" class="btn btn-primary rounded-pill px-4"><i class="fas fa-plus me-2"></i> إضافة مستخدم جديد</a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <table class="table table-hover mb-0 align-middle">
+        <thead class="bg-light">
+            <tr>
+                <th class="p-3">ID</th>
+                <th class="p-3">الاسم</th>
+                <th class="p-3">البريد الإلكتروني</th>
+                <th class="p-3">تاريخ الانضمام</th>
+                <th class="p-3">نوع الحساب</th>
+                <th class="p-3">الحالة</th>
+                <th class="p-3 text-center">إجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td class="p-3 text-muted">#{{ user.id }}</td>
+                <td class="p-3 fw-bold">{{ user.get_full_name|default:user.username }}</td>
+                <td class="p-3">{{ user.email }}</td>
+                <td class="p-3">{{ user.date_joined|date:"Y-m-d" }}</td>
+                <td class="p-3">
+                    {% if user.is_staff %}
+                    <span class="badge bg-danger rounded-pill px-3">مدير</span>
+                    {% else %}
+                    <span class="badge bg-primary rounded-pill px-3">مستخدم</span>
+                    {% endif %}
+                </td>
+                <td class="p-3">
+                    {% if user.is_active %}
+                        <span class="badge bg-success rounded-pill px-3">نشط</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark rounded-pill px-3">موقوف/محظور</span>
+                    {% endif %}
+                </td>
+                <td class="p-3 text-center">
+                    <form action="{% url 'dashboard:user_toggle_status' user.id %}" method="POST" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm {% if user.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %} rounded-circle me-1" title="{% if user.is_active %}حظر/إيقاف{% else %}تفعيل{% endif %}">
+                            <i class="fas {% if user.is_active %}fa-user-slash{% else %}fa-user-check{% endif %}"></i>
+                        </button>
+                    </form>
+                    <a href="{% url 'dashboard:user_edit' user.id %}" class="btn btn-sm btn-outline-dark rounded-circle me-1"><i class="fas fa-edit"></i></a>
+                    <a href="{% url 'dashboard:user_delete' user.id %}" class="btn btn-sm btn-outline-danger rounded-circle"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="p-4 text-center text-muted">لا يوجد مستخدمين.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include 'dashboard/components/pagination.html' %}
+{% endblock %}

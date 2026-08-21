@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/home.css">
+{% endblock %}
+
+{% block content %}
+<section class="hero-section position-relative">
+    <!-- Animated Background Circles -->
+    <div class="bg-circle circle-1"></div>
+    <div class="bg-circle circle-2"></div>
+    
+    <!-- 3D Rotating Rings Canvas -->
+    <canvas id="hero-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;"></canvas>
+    
+    <div class="container position-relative" style="z-index: 2;">
+        <div class="row align-items-center justify-content-between g-4 flex-column-reverse flex-lg-row-reverse">
+            <!-- الصورة على اليسار في الديسكتوب، وفي الأسفل في الموبايل -->
+            <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                <img src="/static/images/hero1.png" alt="دار الأديب" class="hero-img img-fluid">
+            </div>
+            
+            <!-- النصوص على اليمين في الديسكتوب، وفي الأعلى في الموبايل -->
+            <div class="col-lg-7 text-center text-lg-start">
+                <h1 class="display-3 fw-bold mb-2" style="font-family: 'Amiri', serif; color: var(--text-dark); text-shadow: 2px 2px 5px rgba(0,0,0,0.05);">دار الأديب</h1>
+                <h2 class="hero-title mb-3">نشر المعرفة... <span>نصنع الأثر</span></h2>
+                <p class="hero-subtitle">دار الأديب للطبع والنشر والتوزيع تهتم بطبع كل الإبداعات التي تستحق أن تخرج للنور في أبهى طبعة ورقية في مصر والوطن العربي.</p>
+                
+                <div class="search-box mt-4 bg-transparent shadow-none p-0 mx-auto mx-lg-0">
+                    <form action="/books/search/" method="GET" class="modern-search-form d-flex align-items-center bg-white rounded-pill p-2 shadow-lg w-100">
+                        <div class="search-icon text-muted ps-3 pe-2 fs-5">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <input type="text" name="q" class="form-control border-0 shadow-none bg-transparent fs-5" placeholder="ابحث عن كتاب، مؤلف...">
+                        
+                        <div class="vr mx-2 text-muted d-none d-md-block"></div>
+                        
+                        <select class="form-select border-0 shadow-none bg-transparent w-auto custom-select d-none d-md-block" name="category" style="cursor: pointer;">
+                            <option value="">كل التصنيفات</option>
+                            <option value="novel">روايات</option>
+                            <option value="poetry">شعر</option>
+                            <option value="history">تاريخ</option>
+                        </select>
+                        
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 ms-2 fw-bold fs-5" style="min-width: 100px;">بحث</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="books-section container">
+    <h2 class="section-title">أحدث الإصدارات</h2>
+    <div class="row mt-4">
+        {% for book in featured_books %}
+            {% cycle 'col-lg-8' 'col-lg-4' 'col-lg-4' 'col-lg-4' 'col-lg-4' 'col-lg-6' 'col-lg-6' 'col-lg-8' 'col-lg-4' as grid_class silent %}
+            {% cycle 'wide' 'narrow' 'narrow' 'narrow' 'narrow' 'wide' 'wide' 'wide' 'narrow' as card_type silent %}
+            
+            <div class="col-12 col-md-6 {{ grid_class }} mb-4">
+                <div class="card h-100 border-0 rounded-4 overflow-hidden bento-card shadow-sm position-relative" style="background: var(--bg-cream); min-height: 320px;">
+                    <!-- Blurred Dynamic Background -->
+                    {% if book.cover %}
+                    <div class="position-absolute w-100 h-100 top-0 start-0 bento-bg" style="background-image: url('{{ book.cover.url }}'); background-size: cover; background-position: center;"></div>
+                    {% else %}
+                    <div class="position-absolute w-100 h-100 top-0 start-0 bento-bg bg-dark"></div>
+                    {% endif %}
+                    <div class="position-absolute w-100 h-100 top-0 start-0 bento-overlay"></div>
+
+                    <!-- Content -->
+                    <div class="card-body position-relative z-index-2 h-100 p-0">
+                        {% if card_type == 'wide' %}
+                        <!-- Wide Layout (Horizontal) -->
+                        <div class="row g-0 h-100 align-items-center flex-row-reverse p-4">
+                            <div class="col-lg-5 text-center mb-3 mb-lg-0">
+                                {% if book.cover %}
+                                <img src="{{ book.cover.url }}" class="rounded-3 shadow-lg bento-cover-wide" alt="{{ book.title }}">
+                                {% else %}
+                                <i class="fas fa-book fa-5x text-white-50"></i>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-7 text-white text-center text-lg-end px-3">
+                                <h3 class="fw-bold text-white mb-2 text-truncate" title="{{ book.title }}">{{ book.title }}</h3>
+                                <a href="{% url 'authors:detail' book.author.slug %}" class="text-white-50 text-decoration-none mb-3 d-block hover-primary"><i class="fas fa-pen-nib me-1"></i> {{ book.author.name }}</a>
+                                <p class="text-white-50 small mb-4 d-none d-lg-block" style="line-height: 1.6;">{{ book.description|truncatewords:15|default:"تحفة أدبية مميزة متاحة الآن." }}</p>
+                                <a href="{% url 'books:detail' book.slug %}" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm bento-btn">اكتشف الآن <i class="fas fa-arrow-left me-1"></i></a>
+                            </div>
+                        </div>
+                        {% else %}
+                        <!-- Narrow Layout (Vertical) -->
+                        <div class="d-flex flex-column h-100 p-4">
+                            <div class="text-center mb-auto pt-2">
+                                {% if book.cover %}
+                                <img src="{{ book.cover.url }}" class="rounded-3 shadow-lg bento-cover-narrow" alt="{{ book.title }}">
+                                {% else %}
+                                <i class="fas fa-book fa-4x text-white-50"></i>
+                                {% endif %}
+                            </div>
+                            <div class="mt-4 text-center text-white">
+                                <h4 class="fw-bold text-white mb-1 text-truncate" title="{{ book.title }}">{{ book.title }}</h4>
+                                <a href="{% url 'authors:detail' book.author.slug %}" class="text-white-50 text-decoration-none small mb-3 d-block hover-primary"><i class="fas fa-pen-nib me-1"></i> {{ book.author.name }}</a>
+                                <a href="{% url 'books:detail' book.slug %}" class="btn btn-outline-light rounded-pill px-4 fw-bold bento-btn w-100">التفاصيل</a>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted fs-5">لا يوجد إصدارات مضافة حالياً.</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="text-center mt-4 pt-2">
+        <a href="{% url 'books:list' %}" class="btn btn-outline-primary rounded-pill px-5 py-3 fw-bold" style="font-size: 1.1rem; border-width: 2px;">تصفح كل الكتب <i class="fas fa-arrow-left me-2"></i></a>
+    </div>
+</section>
+
+<!-- Featured Authors Section -->
+<section class="authors-section container py-5 mt-4">
+    <h2 class="section-title">نخبة من المؤلفين</h2>
+    <div class="row g-4 justify-content-center">
+        {% for author in featured_authors %}
+        <div class="col-6 col-md-3">
+            <a href="{% url 'authors:detail' author.slug %}" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm text-center p-4 transition-card" style="border-radius: 20px;">
+                    <div class="mb-3">
+                        {% if author.photo %}
+                            <img src="{{ author.photo.url }}" class="rounded-circle shadow-sm" style="width: 100px; height: 100px; object-fit: cover;" alt="{{ author.name }}">
+                        {% else %}
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto shadow-sm" style="width: 100px; height: 100px;">
+                                <i class="fas fa-user-tie fa-2x text-muted"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <h5 class="text-dark fw-bold m-0" style="font-size: 1.1rem;">{{ author.name }}</h5>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-5">
+        <a href="{% url 'authors:list' %}" class="btn btn-outline-dark rounded-pill px-4">عرض كل المؤلفين</a>
+    </div>
+</section>
+
+<section class="container">
+    <div class="about-section">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="text-center mb-4">
+                    <img src="/static/images/hero1.png" alt="شعار دار الأديب" style="max-height: 100px;">
+                </div>
+                <h2 class="section-title">عن دار الأديب</h2>
+                <div class="about-text text-center">
+                    <p>تعد <strong>دار الأديب للطبع والنشر والتوزيع والترجمة</strong> مؤسسة ثقافية مصرية متخصصة في صناعة الكتاب والنشر الرقمي والورقي في مصر والعالم العربي، ويرأس إدارتها الكاتب والشاعر <strong>الدكتور سيد غيث</strong>. تأسست الدار برؤية تهدف إلى رعاية المبدعين ونشر الثقافة الأدبية والعلمية، مع التركيز على إخراج الأعمال الإبداعية في أفضل حُلة ورقية.</p>
+                    
+                    <h4 class="mt-5 mb-4 font-weight-bold" style="font-family: 'Amiri', serif; font-size: 1.8rem;">تتلخص أبرز ملامح عمل الدار وأنشطتها في النقاط التالية:</h4>
+                    <ul class="list-unstyled text-start d-inline-block" style="direction: rtl;">
+                        <li class="mb-3"><i class="fas fa-bookmark text-primary me-2 ms-2 fs-5"></i> <strong>التنوع الأدبي والفكري:</strong> تشمل إصدارات الدار مجالات متعددة من الأدب العربي الكلاسيكي والمعاصر، مثل الروايات، والقصص القصيرة، والدواوين الشعرية، والدراسات الفكرية والنقدية، بالإضافة إلى كتب التاريخ وحضارات العالم القديم.</li>
+                        <li class="mb-3"><i class="fas fa-bookmark text-primary me-2 ms-2 fs-5"></i> <strong>مشروع الترجمة العالمي:</strong> تتبنى الدار مشروعاً ثقافياً لترجمة أشهر روايات الأدب العالمي وأبرز الكتب الثقافية والفكرية إلى اللغة العربية لإتاحتها للقارئ العربي.</li>
+                        <li class="mb-3"><i class="fas fa-bookmark text-primary me-2 ms-2 fs-5"></i> <strong>شبكة التوزيع:</strong> تتمتع الدار بشبكة توزيع محلي وعربي تشمل المشاركة في معارض الكتاب الدولية الكبرى، إلى جانب توفير الإصدارات من خلال فروع ومكتبات "دار المعارف المصرية".</li>
+                        <li class="mb-3"><i class="fas fa-bookmark text-primary me-2 ms-2 fs-5"></i> <strong>دعم وتكريم المبدعين:</strong> تطلق الدار بانتظام مبادرات وتخفيضات لنشر أعمال الكتاب الشباب، كما تنظم وترعى مسابقات أدبية مثل "مسابقة الملتقى الإفرو آسيوي للإبداع في القصة القصيرة"، وتقدم مزايا إعلامية للمؤلفين مثل الحلقات التلفزيونية والإذاعية المهداة للتعريف بأعمالهم.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 text-center mt-5" style="background: var(--bg-cream); border-radius: 30px;">
+    <div class="container py-4">
+        <h2 class="mb-4 font-weight-bold" style="color: var(--text-dark);">هل لديك مخطوطة تستحق النشر؟</h2>
+        <p class="lead mb-4 text">نحن في دار الأديب نبحث دائماً عن الإبداع. أرسل لنا عملك ودعنا نصنع الأثر معاً.</p>
+        <a href="/manuscripts/submit/" class="btn btn-primary btn-lg px-5 rounded-pill">أرسل مخطوطتك الآن</a>
+    </div>
+</section>
+
+<!-- Include Rotating Rings Script -->
+<script src="/static/js/particles_rings.js"></script>
+{% endblock %}

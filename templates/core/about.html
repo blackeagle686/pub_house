@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}عن دار الأديب{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="about-hero py-5 position-relative overflow-hidden" style="background: linear-gradient(135deg, rgba(248, 170, 39, 0.05), rgba(17, 17, 17, 0.02));">
+    <!-- Animated Background Circles -->
+    <div class="bg-circle circle-1"></div>
+    <div class="bg-circle circle-2"></div>
+    <div class="container mt-4 position-relative" style="z-index: 2;">
+        <div class="row align-items-center flex-row-reverse">
+            <!-- Image -->
+            <div class="col-lg-5 text-center mb-5 mb-lg-0">
+                <div class="position-relative d-inline-block">
+                    <!-- Glowing soft backdrop behind the image -->
+                    <div class="position-absolute top-50 start-50 translate-middle rounded-circle" style="width: 380px; height: 380px; background: radial-gradient(circle, rgba(248,170,39,0.3) 0%, transparent 70%); filter: blur(10px);"></div>
+                    <!-- Modern borderless image -->
+                    <img src="/static/images/said-geth2.jpg" alt="الدكتور سيد غيث" class="rounded-circle position-relative z-index-2" style="width: 350px; height: 350px; object-fit: cover; box-shadow: 0 25px 50px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.03); animation: float 6s ease-in-out infinite;">
+                </div>
+            </div>
+            
+            <!-- Text Content -->
+            <div class="col-lg-7 pe-lg-5">
+                <h1 class="fw-bold mb-4 text-center" style="color: var(--text-dark); font-size: 3rem;">عن <span style="color: var(--primary-color);">دار الأديب</span></h1>
+                <p class="fs-5 mb-4" style="line-height: 2; color: var(--text-muted-readable);">
+                    تعد <strong>دار الأديب للطبع والنشر والتوزيع والترجمة</strong> مؤسسة ثقافية مصرية متخصصة في صناعة الكتاب والنشر الرقمي والورقي في مصر والعالم العربي، ويرأس إدارتها الكاتب والشاعر <strong>الدكتور سيد غيث</strong>.
+                </p>
+                <p class="fs-5 mb-4" style="line-height: 2; color: var(--text-muted-readable);">
+                    تأسست الدار برؤية تهدف إلى رعاية المبدعين ونشر الثقافة الأدبية والعلمية، مع التركيز على إخراج الأعمال الإبداعية في أفضل حُلة ورقية لتليق بالقارئ العربي في كل مكان.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-white">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">أبرز ملامح أنشطتنا</h2>
+            <div class="mx-auto" style="width: 80px; height: 4px; background-color: var(--primary-color); border-radius: 5px;"></div>
+        </div>
+        
+        <div class="row g-4 mt-3">
+            <!-- Feature 1 -->
+            <div class="col-md-6 mb-4">
+                <div class="d-flex p-4 h-100 bg-light rounded-4 shadow-sm feature-card transition-all">
+                    <div class="me-4 ms-4">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                            <i class="fas fa-book-reader fa-2x"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold mb-3">التنوع الأدبي والفكري</h4>
+                        <p style="line-height: 1.8; color: var(--text-muted-readable);">
+                            تشمل إصدارات الدار مجالات متعددة من الأدب العربي الكلاسيكي والمعاصر، مثل الروايات، والقصص القصيرة، والدواوين الشعرية، والدراسات الفكرية والنقدية، بالإضافة إلى كتب التاريخ وحضارات العالم القديم.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="col-md-6 mb-4">
+                <div class="d-flex p-4 h-100 bg-light rounded-4 shadow-sm feature-card transition-all">
+                    <div class="me-4 ms-4">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                            <i class="fas fa-globe-americas fa-2x"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold mb-3">مشروع الترجمة العالمي</h4>
+                        <p style="line-height: 1.8; color: var(--text-muted-readable);">
+                            تتبنى الدار مشروعاً ثقافياً لترجمة أشهر روايات الأدب العالمي وأبرز الكتب الثقافية والفكرية إلى اللغة العربية لإتاحتها للقارئ العربي بأعلى معايير الجودة.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="col-md-6 mb-4">
+                <div class="d-flex p-4 h-100 bg-light rounded-4 shadow-sm feature-card transition-all">
+                    <div class="me-4 ms-4">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                            <i class="fas fa-truck fa-2x"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold mb-3">شبكة التوزيع القوية</h4>
+                        <p style="line-height: 1.8; color: var(--text-muted-readable);">
+                            تتمتع الدار بشبكة توزيع محلي وعربي تشمل المشاركة في معارض الكتاب الدولية الكبرى، إلى جانب توفير الإصدارات من خلال فروع ومكتبات "دار المعارف المصرية".
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 4 -->
+            <div class="col-md-6 mb-4">
+                <div class="d-flex p-4 h-100 bg-light rounded-4 shadow-sm feature-card transition-all">
+                    <div class="me-4 ms-4">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                            <i class="fas fa-award fa-2x"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold mb-3">دعم وتكريم المبدعين</h4>
+                        <p style="line-height: 1.8; color: var(--text-muted-readable);">
+                            نطلق بانتظام مبادرات لنشر أعمال الكتاب الشباب، وننظم مسابقات أدبية مثل "مسابقة الملتقى الإفرو آسيوي للإبداع"، ونقدم مزايا إعلامية للمؤلفين مثل الحلقات التلفزيونية والإذاعية المهداة للتعريف بأعمالهم.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+        background-color: #fff !important;
+        border: 1px solid rgba(248, 170, 39, 0.2);
+    }
+    [data-theme="dark"] .feature-card:hover {
+        background-color: #333339 !important;
+        border: 1px solid rgba(248, 170, 39, 0.4);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+    }
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+</style>
+{% endblock %}

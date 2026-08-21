@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}حسابي - دار الأديب{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/account.css">
+<link rel="stylesheet" href="/static/css/profile.css">
+{% endblock %}
+{% block content %}
+<div class="container py-5 mt-2">
+    
+    <!-- Profile Main Card -->
+    <div class="profile-card mb-4">
+        <!-- Banner -->
+        <div class="profile-header-banner"></div>
+        
+        <div class="px-3 pb-3">
+            <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end justify-content-between text-center text-md-start">
+                
+                <!-- Avatar & Name -->
+                <div class="d-flex flex-column flex-md-row align-items-center gap-3">
+                    <div class="profile-avatar-container">
+                        {% if request.user.profile.image %}
+                            <img src="{{ request.user.profile.image.url }}" class="profile-avatar-img" alt="الصورة الشخصية">
+                        {% else %}
+                            <div class="profile-avatar-placeholder">
+                                {{ request.user.username|make_list|first|upper }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mt-3 mt-md-0 pt-md-4">
+                        <h2 class="fw-bold mb-1">{{ request.user.get_full_name|default:request.user.username }}</h2>
+                        <p class="opacity-75 mb-2 fs-5">{{ request.user.email }}</p>
+                        <div class="d-flex flex-wrap justify-content-center justify-content-md-start gap-2">
+                            {% if is_author %}
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-2"><i class="fas fa-feather-alt me-1"></i> مؤلف معتمد</span>
+                            {% else %}
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary rounded-pill px-3 py-2"><i class="fas fa-book-reader me-1"></i> قارئ مميز</span>
+                            {% endif %}
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary rounded-pill px-3 py-2"><i class="fas fa-calendar-alt me-1"></i> انضم {{ request.user.date_joined|date:"Y/m" }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="mt-4 mt-md-0 pt-md-4 d-flex gap-2">
+                    <a href="{% url 'accounts:logout' %}" class="btn btn-outline-danger rounded-pill px-4 fw-bold shadow-sm"><i class="fas fa-sign-out-alt me-2"></i> خروج</a>
+                </div>
+            </div>
+            
+            <hr class="my-4 opacity-10">
+            
+            <!-- Quick Info Bar -->
+            <div class="row g-3 text-center text-md-start opacity-75">
+                {% if request.user.profile.phone %}
+                <div class="col-sm-4">
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+                        <i class="fas fa-phone-alt text-primary p-2 bg-primary bg-opacity-10 rounded-circle"></i>
+                        <span>{{ request.user.profile.phone }}</span>
+                    </div>
+                </div>
+                {% endif %}
+                {% if request.user.profile.location %}
+                <div class="col-sm-4">
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+                        <i class="fas fa-map-marker-alt text-primary p-2 bg-primary bg-opacity-10 rounded-circle"></i>
+                        <span>{{ request.user.profile.location }}</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Navigation Sidebar -->
+        <div class="col-lg-3">
+            <div class="profile-card p-3 sticky-top" style="top: 100px; z-index: 10;">
+                <h5 class="fw-bold mb-3 px-2 opacity-75 fs-6 text-uppercase tracking-wide">القائمة الرئيسية</h5>
+                <div class="nav flex-column nav-pills-custom" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <button class="nav-link text-start active d-flex align-items-center gap-3" id="v-pills-dashboard-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dashboard" type="button" role="tab" aria-selected="true">
+                        <i class="fas fa-chart-pie fs-5"></i> لوحة التحكم
+                    </button>
+                    {% if not is_author %}
+                    <button class="nav-link text-start d-flex align-items-center gap-3" id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-selected="false">
+                        <i class="fas fa-shopping-bag fs-5"></i> سجل الطلبات
+                    </button>
+                    {% endif %}
+                    <button class="nav-link text-start d-flex align-items-center gap-3" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-selected="false">
+                        <i class="fas fa-user-edit fs-5"></i> الإعدادات الشخصية
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="col-lg-9">
+            <div class="tab-content" id="v-pills-tabContent">
+                
+                <!-- Dashboard Tab -->
+                <div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab">
+                    
+                    {% if is_author %}
+                        <!-- Author Dashboard -->
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
+                                <i class="fas fa-chart-line text-primary fs-4"></i>
+                            </div>
+                            <h3 class="fw-bold mb-0">نظرة عامة على مبيعاتك</h3>
+                        </div>
+                        
+                        <div class="row g-4 mb-5">
+                            <div class="col-md-6">
+                                <div class="stat-card-modern shadow-lg text-white" style="background: linear-gradient(135deg, #f8aa27, #ff6b6b);">
+                                    <div class="stat-icon-wrapper">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <p class="mb-1 opacity-75 fw-bold fs-5">نسخ مباعة</p>
+                                    <h2 class="fw-bold mb-0 display-4">{{ total_sales }}</h2>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="stat-card-modern shadow-lg text-white" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                                    <div class="stat-icon-wrapper">
+                                        <i class="fas fa-star text-warning"></i>
+                                    </div>
+                                    <p class="mb-1 opacity-75 fw-bold fs-5">إجمالي التقييمات</p>
+                                    <h2 class="fw-bold mb-0 display-4">{{ total_reviews }}</h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-4 mt-5">
+                            <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
+                                <i class="fas fa-book-open text-primary fs-4"></i>
+                            </div>
+                            <h3 class="fw-bold mb-0">مؤلفاتك المنشورة</h3>
+                        </div>
+                        
+                        <div class="row g-4">
+                            {% for book in author_books %}
+                            <div class="col-md-6 col-lg-4">
+                                <div class="book-card-modern h-100 d-flex flex-column">
+                                    {% if book.cover %}
+                                        <img src="{{ book.cover.url }}" alt="{{ book.title }}">
+                                    {% else %}
+                                        <div class="bg-secondary bg-opacity-25 d-flex align-items-center justify-content-center" style="height: 220px;">
+                                            <i class="fas fa-book fa-4x opacity-50"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div class="p-3 text-center flex-grow-1 d-flex flex-column justify-content-between">
+                                        <div>
+                                            <h5 class="fw-bold mb-2">{{ book.title }}</h5>
+                                            <p class="opacity-75 small mb-3"><i class="fas fa-star text-warning me-1"></i> {{ book.review_count }} تقييم</p>
+                                        </div>
+                                        <a href="{% url 'books:detail' book.slug %}" class="btn btn-outline-primary btn-sm w-100 rounded-pill fw-bold">تصفح الكتاب</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="col-12 text-center opacity-50 py-5 profile-card">
+                                <i class="fas fa-folder-open fa-4x mb-3"></i>
+                                <h4>لم يتم نشر كتب لك بعد.</h4>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                    {% else %}
+                        <!-- Reader Dashboard -->
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
+                                <i class="fas fa-compass text-primary fs-4"></i>
+                            </div>
+                            <h3 class="fw-bold mb-0">نظرة عامة على نشاطك</h3>
+                        </div>
+                        
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <div class="stat-card-modern profile-card shadow-sm h-100 border-primary border-start border-5">
+                                    <div class="stat-icon-wrapper text-primary bg-primary bg-opacity-10">
+                                        <i class="fas fa-shopping-bag"></i>
+                                    </div>
+                                    <p class="opacity-75 fw-bold mb-1 fs-5">إجمالي الطلبات</p>
+                                    <h2 class="fw-bold mb-0 text-primary">{{ orders.count }}</h2>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="stat-card-modern profile-card shadow-sm h-100 border-info border-start border-5 position-relative">
+                                    <div class="stat-icon-wrapper text-info bg-info bg-opacity-10">
+                                        <i class="fas fa-book-reader"></i>
+                                    </div>
+                                    <p class="opacity-75 fw-bold mb-1 fs-5">آخر كتاب طلبته</p>
+                                    {% if last_book %}
+                                        <h4 class="fw-bold mb-0 text-truncate">{{ last_book.title }}</h4>
+                                        <a href="{% url 'books:detail' last_book.slug %}" class="stretched-link"></a>
+                                    {% else %}
+                                        <h4 class="fw-bold mb-0 opacity-50">لا يوجد كتب</h4>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                {% if not is_author %}
+                <!-- Orders Tab -->
+                <div class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-orders-tab">
+                    <div class="profile-card p-3 p-md-4">
+                        <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+                            <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
+                                <i class="fas fa-box-open text-primary fs-4"></i>
+                            </div>
+                            <h3 class="fw-bold mb-0">سجل الطلبات</h3>
+                        </div>
+                        
+                        {% if orders %}
+                            <div class="table-responsive table-modern">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>رقم الطلب</th>
+                                            <th>التاريخ</th>
+                                            <th>الإجمالي</th>
+                                            <th>الحالة</th>
+                                            <th class="text-end">التفاصيل</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for order in orders %}
+                                        <tr>
+                                            <td><span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 fs-6">#{{ order.id }}</span></td>
+                                            <td class="opacity-75">{{ order.created_at|date:"Y/m/d" }}</td>
+                                            <td class="text-success fw-bold fs-5">{{ order.total_price }} ج.م</td>
+                                            <td>
+                                                {% if order.status == 'pending' %}
+                                                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="fas fa-clock me-1"></i> قيد المراجعة</span>
+                                                {% elif order.status == 'approved' %}
+                                                    <span class="badge bg-info text-dark px-3 py-2 rounded-pill"><i class="fas fa-check-circle me-1"></i> مقبول</span>
+                                                {% elif order.status == 'shipped' %}
+                                                    <span class="badge bg-primary px-3 py-2 rounded-pill"><i class="fas fa-truck me-1"></i> مشحون</span>
+                                                {% elif order.status == 'delivered' %}
+                                                    <span class="badge bg-success px-3 py-2 rounded-pill"><i class="fas fa-box me-1"></i> تم التسليم</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger px-3 py-2 rounded-pill"><i class="fas fa-times-circle me-1"></i> ملغي</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-end">
+                                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold">عرض</button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <div class="bg-secondary bg-opacity-10 d-inline-flex p-4 rounded-circle mb-3">
+                                    <i class="fas fa-shopping-cart fa-3x text-secondary opacity-50"></i>
+                                </div>
+                                <h4 class="fw-bold opacity-75">لم تقم بإجراء أي طلبات حتى الآن</h4>
+                                <a href="{% url 'books:list' %}" class="btn btn-primary rounded-pill px-5 mt-4 py-2 fw-bold shadow-sm">تصفح المتجر الآن</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Settings Tab -->
+                <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+                    <div class="profile-card p-3 p-md-4">
+                        <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+                            <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
+                                <i class="fas fa-user-cog text-primary fs-4"></i>
+                            </div>
+                            <h3 class="fw-bold mb-0">تحديث البيانات الشخصية</h3>
+                        </div>
+                        
+                        <form method="POST" enctype="multipart/form-data" class="mt-4">
+                            {% csrf_token %}
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    {{ user_form.first_name|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ user_form.last_name|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ user_form.primary_phone|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ user_form.email|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ profile_form.phone|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ profile_form.location|as_crispy_field }}
+                                </div>
+
+                                <div class="col-12 mt-5 text-end border-top pt-4">
+                                    <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 fw-bold shadow-sm fs-5"><i class="fas fa-save me-2"></i> حفظ التعديلات</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

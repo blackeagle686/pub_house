@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }} - دار الأديب{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/book.css">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="book-hero position-relative d-flex align-items-center" style="min-height: 90vh; padding-top: 100px; padding-bottom: 80px; overflow: hidden; background-color: var(--bg-cream);">
+    <!-- Blurred Dynamic Background -->
+    {% if book.cover %}
+    <div class="position-absolute w-100 h-100 top-0 start-0 hero-blur-bg" style="background-image: url('{{ book.cover.url }}'); background-size: cover; background-position: center; transform: scale(1.1); z-index: 1;"></div>
+    {% else %}
+    <div class="position-absolute w-100 h-100 top-0 start-0 hero-blur-bg fallback-bg" style="z-index: 1;"></div>
+    {% endif %}
+    <!-- Overlay to ensure text readability -->
+    <div class="position-absolute w-100 h-100 top-0 start-0 hero-overlay" style="z-index: 2;"></div>
+
+    <div class="container position-relative z-index-3">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-5">
+            <ol class="breadcrumb hero-breadcrumb">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none">الرئيسية</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'books:list' %}" class="text-decoration-none">الكتب</a></li>
+                {% if book.category %}
+                <li class="breadcrumb-item"><a href="{% url 'books:category_list' book.category.slug %}" class="text-decoration-none">{{ book.category.name }}</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active fw-bold" aria-current="page">{{ book.title }}</li>
+            </ol>
+        </nav>
+
+        <div class="row align-items-center g-5 flex-row-reverse">
+            <!-- Book Cover -->
+            <div class="col-lg-5 text-center">
+                <div class="book-cover-3d mx-auto position-relative" style="perspective: 1000px; max-width: 400px;">
+                    {% if book.cover %}
+                        <img src="{{ book.cover.url }}" class="img-fluid rounded-3 book-hero-img" alt="{{ book.title }}">
+                    {% else %}
+                        <div class="bg-light rounded-3 d-flex align-items-center justify-content-center book-hero-img" style="height: 550px; border: 1px solid rgba(0,0,0,0.1);">
+                            <i class="fas fa-book fa-6x hero-text-muted"></i>
+                        </div>
+                    {% endif %}
+                    <!-- Shadow -->
+                    <div class="position-absolute bottom-0 start-50 translate-middle-x rounded-circle book-shadow" style="width: 80%; height: 20px; filter: blur(20px); transform: translateY(40px); z-index: -1;"></div>
+                </div>
+            </div>
+
+            <!-- Title & Quick Info -->
+            <div class="col-lg-7 hero-text">
+                {% if book.category %}
+                <a href="{% url 'books:category_list' book.category.slug %}" class="badge bg-primary text-dark fw-bold px-3 py-2 rounded-pill fs-6 mb-3 text-decoration-none shadow-sm"><i class="fas fa-tag me-1 ms-2"></i>{{ book.category.name }}</a>
+                {% endif %}
+                
+                <h1 class="display-3 fw-bold mb-3 hero-title" style="font-family: 'Amiri', serif;">{{ book.title }}</h1>
+                
+                <!-- Average Rating -->
+                <div class="d-flex align-items-center mb-3">
+                    <div class="text-warning fs-4 me-2">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= book.average_rating %}
+                                <i class="fas fa-star"></i>
+                            {% elif forloop.counter <= book.average_rating|add:"0.5" %}
+                                <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="fs-5 fw-bold hero-text">{{ book.average_rating }}</span>
+                    <span class="fs-6 hero-text-muted ms-2">({{ book.review_count }} تقييم)</span>
+                </div>
+                <h3 class="mb-4">
+                    <span class="hero-text-muted fw-light fs-4 me-2">تأليف:</span>
+                    <a href="{% url 'authors:detail' book.author.slug %}" class="hero-text fw-bold text-decoration-none hover-primary border-bottom border-primary border-2 pb-1">{{ book.author.name }}</a>
+                </h3>
+
+                <div class="d-flex gap-4 mb-5 hero-text-muted flex-wrap">
+                    <div class="d-flex align-items-center"><i class="fas fa-calendar-alt text-primary fs-4 me-2 ms-2"></i> <span class="fs-5">{{ book.publication_year|default:"غير محددة" }}</span></div>
+                    <div class="d-flex align-items-center"><i class="fas fa-file-alt text-primary fs-4 me-2 ms-2"></i> <span class="fs-5">{{ book.pages|default:"-" }} صفحة</span></div>
+                    <div class="d-flex align-items-center"><i class="fas fa-barcode text-primary fs-4 me-2 ms-2"></i> <span class="fs-5">{{ book.isbn|default:"بدون ISBN" }}</span></div>
+                </div>
+
+                <!-- Purchase Card (Floating over hero) -->
+                <div class="card purchase-card border-0 rounded-4 p-4 p-lg-5 backdrop-blur shadow-lg position-relative overflow-hidden">
+                    <div class="position-absolute w-100 h-100 top-0 start-0 purchase-card-glow" style="pointer-events: none;"></div>
+                    
+                    <div class="row align-items-center position-relative z-index-2">
+                        <div class="col-md-7 mb-4 mb-md-0">
+                            {% if book.paperback_price or book.ebook_price %}
+                                <h5 class="hero-text-muted mb-3">اختر نسختك:</h5>
+                                <div class="d-flex gap-3 flex-wrap">
+                                    {% if book.paperback_price %}
+                                    <div class="price-pill {% if book.stock <= 0 %}opacity-50{% endif %}">
+                                        <i class="fas fa-book-open text-primary mb-2 fs-4"></i>
+                                        <div class="small hero-text-muted mb-1">نسخة ورقية</div>
+                                        <div class="fw-bold fs-4 hero-text">{{ book.paperback_price }} <span class="fs-6">ج.م</span></div>
+                                        {% if book.stock > 0 %}<div class="text-success small mt-2 fw-bold"><i class="fas fa-check-circle"></i> متوفر في المخزن</div>{% else %}<div class="text-danger small mt-2 fw-bold"><i class="fas fa-times-circle"></i> نفذت الكمية</div>{% endif %}
+                                    </div>
+                                    {% endif %}
+                                    {% if book.ebook_price %}
+                                    <div class="price-pill">
+                                        <i class="fas fa-tablet-alt text-primary mb-2 fs-4"></i>
+                                        <div class="small hero-text-muted mb-1">نسخة إلكترونية</div>
+                                        <div class="fw-bold fs-4 hero-text">{{ book.ebook_price }} <span class="fs-6">ج.م</span></div>
+                                        <div class="text-success small mt-2 fw-bold"><i class="fas fa-download"></i> تحميل فوري</div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="hero-text-muted d-flex align-items-center"><i class="fas fa-info-circle fs-3 text-primary me-2 ms-3"></i> <span>السعر غير محدد حالياً. ترقبوا إتاحته قريباً!</span></div>
+                            {% endif %}
+                            
+                            <div class="mt-4 pt-3 border-top border-secondary opacity-75">
+                                <button type="button" class="btn btn-sm btn-link text-danger text-decoration-none p-0 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#reportModal" data-bs-model="books.book" data-bs-id="{{ book.id }}">
+                                    <i class="fas fa-flag me-1 ms-2"></i> إبلاغ عن الكتاب
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-5 border-end-md ps-md-4 text-center">
+                            {% if book.stock > 0 or book.ebook_price %}
+                                <form action="{% url 'orders:cart_add' book.id %}" method="POST" class="d-block w-100">
+                                    {% csrf_token %}
+                                    <select name="book_type" class="form-select border-secondary mb-3 rounded-pill text-center shadow-none" style="cursor: pointer;">
+                                        {% if book.paperback_price and book.stock > 0 %}<option value="paperback">نسخة ورقية</option>{% endif %}
+                                        {% if book.ebook_price %}<option value="ebook">نسخة إلكترونية</option>{% endif %}
+                                    </select>
+                                    <button type="submit" class="btn btn-primary btn-lg rounded-pill w-100 fw-bold shadow-lg btn-glow" style="padding: 15px;"><i class="fas fa-shopping-cart me-2 ms-1"></i> أضف للسلة</button>
+                                </form>
+                            {% else %}
+                                <button class="btn btn-secondary btn-lg rounded-pill w-100 fw-bold shadow-lg" style="padding: 15px;" disabled><i class="fas fa-bell me-2 ms-1"></i> أعلمني عند التوفر</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Details & Description Section -->
+<div class="container py-5 mb-5 mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5 desc-card">
+                <div class="d-flex align-items-center mb-4 pb-3 border-bottom desc-border">
+                    <i class="fas fa-quote-right fa-2x text-primary me-3 ms-3"></i>
+                    <h2 class="fw-bold m-0" style="color: var(--text-dark);">نبذة عن الكتاب</h2>
+                </div>
+                <div class="book-description" style="line-height: 2.2; font-size: 1.2rem; color: var(--text-muted-readable);">
+                    {{ book.description|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reviews Section -->
+<div class="container py-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5 desc-card">
+                <div class="d-flex align-items-center mb-4 pb-3 border-bottom desc-border">
+                    <i class="fas fa-star fa-2x text-warning me-3 ms-3"></i>
+                    <h2 class="fw-bold m-0" style="color: var(--text-dark);">التقييمات والمراجعات</h2>
+                </div>
+                
+                {% if user.is_authenticated %}
+                <div class="mb-5 bg-white p-4 rounded-4 shadow-sm border review-form-card" style="border-color: rgba(248, 170, 39, 0.2) !important;">
+                    <h4 class="fw-bold mb-3" style="color: var(--text-dark);">أضف تقييمك</h4>
+                    <form action="{% url 'books:submit_review' book.slug %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" style="color: var(--text-muted-readable);">التقييم (من 1 إلى 5 نجوم)</label>
+                            <div class="rating-input mb-3" dir="rtl" style="display: flex; flex-direction: row-reverse; justify-content: flex-end;">
+                                <input type="radio" id="star5" name="rating" value="5" class="d-none" required /><label for="star5" class="fs-3 text-muted me-1 cursor-pointer"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star4" name="rating" value="4" class="d-none" /><label for="star4" class="fs-3 text-muted me-1 cursor-pointer"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star3" name="rating" value="3" class="d-none" /><label for="star3" class="fs-3 text-muted me-1 cursor-pointer"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star2" name="rating" value="2" class="d-none" /><label for="star2" class="fs-3 text-muted me-1 cursor-pointer"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star1" name="rating" value="1" class="d-none" /><label for="star1" class="fs-3 text-muted me-1 cursor-pointer"><i class="fas fa-star"></i></label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="comment" class="form-label fw-bold" style="color: var(--text-muted-readable);">رأيك في الكتاب (اختياري)</label>
+                            <textarea name="comment" id="comment" rows="3" class="form-control rounded-3 border-secondary bg-transparent text-dark shadow-none" placeholder="اكتب رأيك هنا..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">نشر التقييم</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="alert alert-info rounded-3 mb-5 fw-bold text-center">
+                    يرجى <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="alert-link">تسجيل الدخول</a> لإضافة تقييم.
+                </div>
+                {% endif %}
+
+                <!-- List Reviews -->
+                <div class="reviews-list">
+                    {% for review in book.reviews.all %}
+                    <div class="review-item mb-4 pb-4 border-bottom desc-border">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="bg-primary text-dark rounded-circle d-flex align-items-center justify-content-center fw-bold me-3 ms-3 shadow-sm" style="width: 45px; height: 45px; font-size: 1.2rem;">
+                                {{ review.user.username|make_list|first|upper }}
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0" style="color: var(--text-dark);">{{ review.user.username }}</h5>
+                                <div class="text-warning small">
+                                    {% for i in "12345"|make_list %}
+                                        {% if forloop.counter <= review.rating %}
+                                            <i class="fas fa-star"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="text-muted ms-2">{{ review.created_at|date:"d M Y" }}</span>
+                                </div>
+                            </div>
+                            <div class="ms-auto me-3">
+                                <button type="button" class="btn btn-sm text-danger border-0 bg-transparent p-0" data-bs-toggle="modal" data-bs-target="#reportModal" data-bs-model="books.review" data-bs-id="{{ review.id }}" title="إبلاغ عن التعليق">
+                                    <i class="fas fa-flag"></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% if review.comment %}
+                        <p class="mb-0 mt-3" style="color: var(--text-muted-readable); font-size: 1.1rem; padding-right: 60px;">{{ review.comment }}</p>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-5">
+                        <i class="far fa-comment-dots fa-4x mb-3 text-muted opacity-50"></i>
+                        <h4 class="text-muted">لا توجد تقييمات حتى الآن.</h4>
+                        <p style="color: var(--text-muted-readable);">كن أول من يقيّم هذا الكتاب!</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

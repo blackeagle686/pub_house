@@ -1,0 +1,143 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <h2 class="fw-bold mb-0">إدارة البلاغات</h2>
+    <form method="GET" class="d-flex shadow-sm rounded-pill bg-white overflow-hidden mx-md-4" style="max-width: 400px;">
+        <select name="status" class="form-select border-0 shadow-none ps-3 bg-transparent">
+            <option value="">جميع الحالات</option>
+            <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>قيد المراجعة</option>
+            <option value="resolved" {% if request.GET.status == 'resolved' %}selected{% endif %}>تم الحل</option>
+            <option value="dismissed" {% if request.GET.status == 'dismissed' %}selected{% endif %}>مرفوض</option>
+        </select>
+        <button class="btn btn-primary border-0 px-4 fw-bold" type="submit"><i class="fas fa-filter"></i> تصفية</button>
+    </form>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <table class="table table-hover mb-0 align-middle">
+        <thead class="bg-light">
+            <tr>
+                <th class="p-3">المبلغ</th>
+                <th class="p-3">السبب</th>
+                <th class="p-3">النوع</th>
+                <th class="p-3">الحالة</th>
+                <th class="p-3">تاريخ البلاغ</th>
+                <th class="p-3 text-center">إجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td class="p-3 fw-bold text-primary">{{ report.reporter.username }}</td>
+                <td class="p-3">{{ report.get_reason_display }}</td>
+                <td class="p-3">
+                    <span class="badge bg-secondary rounded-pill px-3">{{ report.content_type.name }} (#{{ report.object_id }})</span>
+                </td>
+                <td class="p-3">
+                    {% if report.status == 'pending' %}
+                        <span class="badge bg-warning text-dark rounded-pill px-3"><i class="fas fa-clock me-1"></i> قيد المراجعة</span>
+                    {% elif report.status == 'resolved' %}
+                        <span class="badge bg-success rounded-pill px-3"><i class="fas fa-check me-1"></i> تم الحل</span>
+                    {% else %}
+                        <span class="badge bg-danger rounded-pill px-3"><i class="fas fa-times me-1"></i> مرفوض</span>
+                    {% endif %}
+                </td>
+                <td class="p-3 text-muted small">{{ report.created_at|date:"d M Y, h:i A" }}</td>
+                <td class="p-3 text-center">
+                    <button type="button" class="btn btn-sm btn-outline-primary rounded-circle me-1" data-bs-toggle="modal" data-bs-target="#reportDetailModal{{ report.id }}" title="عرض التفاصيل"><i class="fas fa-eye"></i></button>
+                    <a href="{% url 'dashboard:report_edit' report.id %}" class="btn btn-sm btn-outline-dark rounded-circle me-1" title="تحديث الحالة"><i class="fas fa-edit"></i></a>
+                    <a href="{% url 'dashboard:report_delete' report.id %}" class="btn btn-sm btn-outline-danger rounded-circle" title="حذف"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
+            
+            <!-- Detail Modal -->
+            <div class="modal fade" id="reportDetailModal{{ report.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content rounded-4 border-0 shadow-lg">
+                        <div class="modal-header border-bottom border-secondary px-4 py-3 bg-light">
+                            <h5 class="modal-title fw-bold text-dark"><i class="fas fa-flag text-danger me-2 ms-2"></i> تفاصيل البلاغ #{{ report.id }}</h5>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4 text-start">
+                            <ul class="list-group list-group-flush rounded-3 border">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">المبلغ:</span>
+                                    <span class="fw-bold">{{ report.reporter.username }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">النوع:</span>
+                                    <span class="badge bg-primary rounded-pill">{{ report.content_type.name }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">السبب الأساسي:</span>
+                                    <span class="fw-bold">{{ report.get_reason_display }}</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="text-muted mb-2">التفاصيل الإضافية:</div>
+                                    <div class="p-3 bg-light rounded-3 border" style="white-space: pre-wrap;">{{ report.description|default:"لا توجد تفاصيل إضافية." }}</div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">تاريخ البلاغ:</span>
+                                    <span>{{ report.created_at|date:"d M Y, h:i A" }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
+                                    <span class="text-dark fw-bold">حالة المحتوى حالياً:</span>
+                                    <span>
+                                        {% if not report.content_object %}
+                                            <span class="badge bg-danger rounded-pill"><i class="fas fa-trash"></i> محذوف</span>
+                                        {% elif report.content_type.model == 'author' %}
+                                            {% if report.content_object.is_active %}
+                                                <span class="badge bg-success rounded-pill"><i class="fas fa-check"></i> نشط</span>
+                                            {% else %}
+                                                <span class="badge bg-danger rounded-pill"><i class="fas fa-ban"></i> محظور</span>
+                                            {% endif %}
+                                        {% elif report.content_type.model == 'book' %}
+                                            {% if report.content_object.is_published %}
+                                                <span class="badge bg-success rounded-pill"><i class="fas fa-globe"></i> منشور</span>
+                                            {% else %}
+                                                <span class="badge bg-warning text-dark rounded-pill"><i class="fas fa-eye-slash"></i> مخفي</span>
+                                            {% endif %}
+                                        {% elif report.content_type.model == 'review' %}
+                                            <span class="badge bg-success rounded-pill"><i class="fas fa-comment"></i> موجود</span>
+                                        {% endif %}
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer border-top px-4 py-3 bg-light">
+                            {% if report.content_object %}
+                                {% if report.content_type.model == 'author' and report.content_object.is_active or report.content_type.model == 'book' and report.content_object.is_published or report.content_type.model == 'review' %}
+                                <div class="dropdown">
+                                    <button class="btn btn-dark rounded-pill px-4 fw-bold dropdown-toggle" type="button" id="actionDropdownModal{{ report.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-bolt me-1"></i> اتخاذ إجراء
+                                    </button>
+                                    <ul class="dropdown-menu border-0 shadow-lg text-end" aria-labelledby="actionDropdownModal{{ report.id }}" style="min-width: 250px;">
+                                        <form action="{% url 'dashboard:report_action' report.id %}" method="POST" class="m-0">
+                                            {% csrf_token %}
+                                            {% if report.content_type.model == 'author' %}
+                                                <li><button type="submit" name="action" value="block_author" class="dropdown-item text-danger py-2 fw-bold"><i class="fas fa-ban ms-2"></i> حظر المؤلف</button></li>
+                                            {% elif report.content_type.model == 'book' %}
+                                                <li><button type="submit" name="action" value="hide_book" class="dropdown-item text-warning py-2 fw-bold"><i class="fas fa-eye-slash ms-2"></i> إخفاء الكتاب لإعادة المراجعة</button></li>
+                                            {% elif report.content_type.model == 'review' %}
+                                                <li><button type="submit" name="action" value="delete_review" class="dropdown-item text-danger py-2 fw-bold"><i class="fas fa-trash-alt ms-2"></i> حذف التعليق</button></li>
+                                                <li><button type="submit" name="action" value="block_user_and_delete_review" class="dropdown-item text-dark py-2 fw-bold"><i class="fas fa-user-slash ms-2"></i> حظر المستخدم وحذف التعليق</button></li>
+                                            {% endif %}
+                                        </form>
+                                    </ul>
+                                </div>
+                                {% endif %}
+                            {% endif %}
+                            <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">إغلاق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% empty %}
+            <tr><td colspan="6" class="p-4 text-center text-muted">لا توجد بلاغات مسجلة.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include 'dashboard/components/pagination.html' %}
+{% endblock %}

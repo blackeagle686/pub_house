@@ -1,0 +1,182 @@
+/* Glassmorphism Header */
+.glass-wrapper {
+    position: fixed;
+    top: 15px;
+    left: 0;
+    right: 0;
+    z-index: 1050; /* Must be higher than offcanvas backdrop (1040) */
+    padding: 0 15px;
+}
+
+@media (min-width: 992px) {
+    .glass-wrapper {
+        padding: 0 40px;
+    }
+}
+
+.glass-nav {
+    background: rgba(250, 250, 250, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 30px;
+    padding: 8px 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    position: relative; /* important for ::before */
+}
+
+.glass-nav::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: -1;
+}
+
+[data-theme="dark"] .glass-nav {
+    background: rgba(30, 30, 36, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.glass-nav .nav-link {
+    color: var(--text-dark) !important;
+    font-weight: 700;
+    padding: 8px 18px !important;
+    border-radius: 50px;
+    transition: all 0.9s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (min-width: 992px) {
+    .glass-nav .nav-link, .action-btn {
+        min-width: 42px;
+        width: auto !important;
+        height: 42px;
+        padding: 0 12px !important;
+        border-radius: 50px !important;
+        overflow: hidden;
+    }
+    .nav-text-desktop {
+        display: inline-block;
+        max-width: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        white-space: nowrap;
+        margin: 0;
+    }
+    .glass-nav .nav-link:hover .nav-text-desktop, 
+    .glass-nav .nav-link.active .nav-text-desktop,
+    .action-btn:hover .nav-text-desktop,
+    .action-btn[aria-expanded="true"] .nav-text-desktop {
+        max-width: 120px;
+        opacity: 1;
+        visibility: visible;
+        margin-right: 8px;
+    }
+}
+
+.glass-nav .nav-link:hover, .glass-nav .nav-link.active {
+    background: rgba(248, 170, 39, 0.15);
+    color: var(--primary-color) !important;
+    transform: translateY(-2px);
+}
+
+[data-theme="dark"] .glass-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Action Buttons & Profile Icon Button */
+.action-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.04);
+    color: var(--text-dark);
+    transition: all 0.6s ease;
+    border: none;
+    text-decoration: none;
+    padding: 0;
+    line-height: 1;
+}
+
+[data-theme="dark"] .action-btn {
+    background: rgba(255,255,255,0.05);
+    color: #f8f9fa;
+}
+
+.action-btn:hover {
+    background: var(--primary-color);
+    color: #111 !important;
+    transform: translateY(-2px);
+}
+
+.user-btn-icon {
+    background: var(--primary-color) !important;
+    color: #111 !important;
+}
+
+.user-btn-icon:hover {
+    background: var(--secondary-color) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(248, 170, 39, 0.3);
+    color: #111 !important;
+}
+
+/* Tooltip functionality replaced with modern expanding pills */
+@media (max-width: 991px) {
+    .nav-text-desktop {
+        display: none !important;
+    }
+    .navbar-nav {
+        width: 100%;
+        align-items: stretch !important;
+    }
+    .nav-item {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    .glass-nav .nav-link {
+        justify-content: flex-start !important;
+        padding: 12px 20px !important;
+        border-radius: 12px !important;
+        background: rgba(0,0,0,0.03);
+        width: 100%;
+    }
+    [data-theme="dark"] .glass-nav .nav-link {
+        background: rgba(255,255,255,0.03);
+    }
+    .offcanvas-body .dropdown-menu {
+        position: static !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        float: none;
+        width: 100%;
+        margin-top: 0;
+        padding-right: 20px;
+        border-radius: 0;
+    }
+    .offcanvas-body .dropdown-item {
+        justify-content: flex-start !important;
+        text-align: right !important;
+        border-radius: 12px;
+    }
+    .offcanvas-body .dropdown-header {
+        text-align: right !important;
+    }
+    .offcanvas-body .dropdown-menu .d-flex {
+        justify-content: flex-start !important;
+    }
+}
+
+/* Push body down because header is fixed */
+body {
+    padding-top: 100px;
+}

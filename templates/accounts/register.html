@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}حساب جديد - دار الأديب{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/account.css">
+{% endblock %}
+{% block content %}
+<div class="container py-5 mt-2">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden account-card">
+        <div class="row g-0">
+            <!-- Image Side (Left) -->
+            <div class="col-md-5 d-none d-md-flex flex-column justify-content-center align-items-center position-relative overflow-hidden account-sidebar">
+                <!-- Modern Glowing Background -->
+                <div class="position-absolute w-100 h-100 account-glow-bg"></div>
+                
+                <!-- Animated Background Circles -->
+                <div class="bg-circle circle-1"></div>
+                
+                <!-- Content (Glassmorphism card) -->
+                <div class="text-center position-relative p-4 mx-4 rounded-4 account-glass-card">
+                    <img src="/static/images/hero1.png" alt="دار الأديب" class="img-fluid mb-4 account-hero-img">
+                    
+                    <h2 class="fw-bold text-white mb-3 account-title-font">مجتمع القرّاء</h2>
+                    <p class="text-white-50 px-2 account-desc-text">
+                        اكتشف آلاف الكتب وشارك شغفك بالقراءة مع نخبة من المثقفين والمبدعين في الوطن العربي.
+                    </p>
+                    
+                    <div class="d-flex justify-content-center gap-3 mt-4 pt-4 border-top border-secondary border-opacity-25">
+                        <div class="text-center">
+                            <i class="fas fa-gift fs-4 text-primary mb-2"></i>
+                            <span class="d-block text-white-50 small">عروض حصرية</span>
+                        </div>
+                        <div class="text-center">
+                            <i class="fas fa-shield-alt fs-4 text-primary mb-2"></i>
+                            <span class="d-block text-white-50 small">دفع آمن</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Side (Right in RTL) -->
+            <div class="col-md-7 p-4 p-md-5 d-flex flex-column justify-content-center bg-white">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold">إنشاء حساب جديد</h3>
+                    <p class="mb-3">انضم إلى مجتمع دار الأديب واستمتع بتجربة شراء مميزة</p>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        {% for field in form %}
+                            <div class="{% if field.name == 'username' or field.name == 'email' or field.name == 'password' or field.name == 'password_confirm' %}col-12{% else %}col-md-6{% endif %}">
+                                {{ field|as_crispy_field }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill mt-4 py-2 fw-bold shadow-sm">إنشاء الحساب</button>
+                </form>
+                <div class="text-center mt-4">
+                    <p class="mb-0">لديك حساب بالفعل؟ <a href="{% url 'accounts:login' %}" class="text-primary text-decoration-none fw-bold">تسجيل الدخول</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

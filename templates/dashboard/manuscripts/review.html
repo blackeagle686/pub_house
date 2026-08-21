@@ -1,0 +1,109 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-12">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 bg-white">
+            <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-4">
+                    {% if object.cover %}
+                        <a href="{{ object.cover.url }}" target="_blank" title="عرض الغلاف بالحجم الكامل">
+                            <img src="{{ object.cover.url }}" alt="غلاف المخطوطة" class="rounded-3 shadow" style="width: 90px; height: 130px; object-fit: cover; border: 3px solid #f8f9fa; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        </a>
+                    {% else %}
+                        <div class="rounded-3 shadow-sm bg-light d-flex align-items-center justify-content-center" style="width: 90px; height: 130px; border: 3px solid #f8f9fa;">
+                            <i class="fas fa-book fa-3x text-muted opacity-50"></i>
+                        </div>
+                    {% endif %}
+                    <div>
+                        <span class="badge bg-primary bg-opacity-10 text-primary mb-2 px-3 py-2 rounded-pill border border-primary border-opacity-25">عنوان المخطوطة</span>
+                        <h2 class="fw-bold mb-0 text-dark" style="font-family: 'Amiri', serif;">{{ object.title }}</h2>
+                    </div>
+                </div>
+                <a href="{% url 'dashboard:manuscripts' %}" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-bold shadow-sm"><i class="fas fa-arrow-right me-2 ms-1"></i> عودة للقائمة</a>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- تفاصيل المخطوطة -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                    <div class="card-header bg-white border-bottom p-4">
+                        <h5 class="fw-bold mb-0"><i class="fas fa-info-circle text-primary me-2 ms-2"></i> التفاصيل وبيانات الاتصال</h5>
+                    </div>
+                    <div class="card-body p-4 p-md-5">
+                        <div class="row mb-5">
+                            <div class="col-md-6 mb-4">
+                                <span class="text-muted d-block mb-1 fs-6">اسم المؤلف</span>
+                                <h5 class="fw-bold text-dark">{{ object.author_name }}</h5>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <span class="text-muted d-block mb-1 fs-6">تاريخ التقديم</span>
+                                <h5 class="fw-bold text-dark">{{ object.created_at|date:"Y-m-d h:i A" }}</h5>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <span class="text-muted d-block mb-1 fs-6">البريد الإلكتروني</span>
+                                <h5 class="fw-bold"><a href="mailto:{{ object.email }}" class="text-decoration-none">{{ object.email }}</a></h5>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <span class="text-muted d-block mb-1 fs-6">رقم الهاتف</span>
+                                <h5 class="fw-bold"><a href="tel:{{ object.phone_number }}" class="text-decoration-none" dir="ltr">{{ object.phone_number }}</a></h5>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-5">
+                            <span class="text-muted d-block mb-3 fs-6 fw-bold">فكرة العمل أو ملخصه</span>
+                            <div class="bg-light p-4 rounded-4 border-0 shadow-sm" style="font-size: 1.1rem; color: #444;">
+                                <p class="mb-0" style="line-height: 1.9;">{{ object.idea|linebreaksbr }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex flex-wrap gap-3 mt-4">
+                            {% if object.file %}
+                                <a href="{{ object.file.url }}" target="_blank" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm fw-bold"><i class="fas fa-file-pdf me-2 ms-2"></i> تحميل ملف المخطوطة</a>
+                            {% else %}
+                                <span class="text-danger fw-bold"><i class="fas fa-exclamation-triangle me-2 ms-2"></i> المؤلف لم يرفق ملفاً</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- قرار الإدارة -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden sticky-top" style="top: 20px;">
+                    <div class="card-header bg-white border-bottom p-4">
+                        <h5 class="fw-bold mb-0"><i class="fas fa-gavel text-primary me-2 ms-2"></i> اتخاذ القرار</h5>
+                    </div>
+                    <div class="card-body p-4 text-center">
+                        {% if object.status == 'pending' %}
+                            <div class="mb-4">
+                                <div class="spinner-grow text-warning mb-2" role="status" style="width: 3rem; height: 3rem;"></div>
+                                <h5 class="text-warning fw-bold">قيد المراجعة</h5>
+                                <p class="text-muted small">هذا العمل في انتظار قرارك</p>
+                            </div>
+                        {% elif object.status == 'accepted' %}
+                            <div class="mb-4">
+                                <i class="fas fa-check-circle fa-4x text-success mb-2"></i>
+                                <h5 class="text-success fw-bold">مقبول</h5>
+                            </div>
+                        {% else %}
+                            <div class="mb-4">
+                                <i class="fas fa-times-circle fa-4x text-danger mb-2"></i>
+                                <h5 class="text-danger fw-bold">مرفوض</h5>
+                            </div>
+                        {% endif %}
+                        
+                        <form method="POST" class="text-start">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <hr class="my-4">
+                            <button type="submit" class="btn btn-success w-100 rounded-pill py-3 fw-bold fs-5 shadow-sm"><i class="fas fa-save me-2 ms-2"></i> حفظ الحالة والتحديث</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

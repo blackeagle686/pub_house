@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ author.name }} - دار الأديب{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/author.css">
+{% endblock %}
+
+{% block content %}
+<div class="author-hero position-relative d-flex align-items-center mb-5" style="min-height: 50vh; background-color: var(--bg-cream); border-radius: 0 0 40px 40px; padding-top: 100px; padding-bottom: 60px;">
+    <!-- Decorative background elements -->
+    <div class="position-absolute top-0 end-0 w-100 h-100 overflow-hidden" style="pointer-events: none;">
+        <div class="bg-circle author-hero-bg-glow"></div>
+    </div>
+    
+    <div class="container position-relative z-index-2">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-5">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none" style="color: var(--text-muted-readable);">الرئيسية</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'authors:list' %}" class="text-decoration-none" style="color: var(--text-muted-readable);">المؤلفون</a></li>
+                <li class="breadcrumb-item active fw-bold" aria-current="page" style="color: var(--primary-color);">{{ author.name }}</li>
+            </ol>
+        </nav>
+        
+        <div class="row align-items-center flex-row-reverse g-5">
+            <!-- Author Image -->
+            <div class="col-lg-4 text-center">
+                <div class="position-relative d-inline-block author-img-wrapper">
+                    <div class="position-absolute top-50 start-50 translate-middle rounded-circle author-glow" style="width: 320px; height: 320px; background: radial-gradient(circle, rgba(248,170,39,0.3) 0%, transparent 70%); filter: blur(15px);"></div>
+                    {% if author.photo %}
+                        <img src="{{ author.photo.url }}" class="rounded-circle position-relative z-index-2 shadow-lg author-img" alt="{{ author.name }}" style="width: 280px; height: 280px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle position-relative z-index-2 shadow-lg d-flex align-items-center justify-content-center author-img" style="width: 280px; height: 280px; background: var(--white); border: 1px solid rgba(248,170,39,0.2);">
+                            <i class="fas fa-user-tie fa-7x" style="color: var(--text-muted);"></i>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Author Bio -->
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-primary text-dark px-3 py-2 rounded-pill fs-6 shadow-sm me-3 ms-3"><i class="fas fa-pen-fancy me-1 ms-1"></i> كاتب مبدع</span>
+                </div>
+                <h1 class="display-3 fw-bold mb-4" style="color: var(--text-dark); font-family: 'Amiri', serif; text-shadow: 0 4px 15px rgba(0,0,0,0.05);">{{ author.name }}</h1>
+                
+                <div class="author-bio card border-0 p-4 rounded-4 shadow-sm" style="background: var(--white);">
+                    {% if author.biography %}
+                        <div class="text-start" style="color: var(--text-muted-readable); font-size: 1.15rem; line-height: 2;">
+                            {{ author.biography|linebreaks }}
+                        </div>
+                    {% else %}
+                        <p class="mb-0 text-center py-3" style="color: var(--text-muted-readable); font-size: 1.1rem;"><i class="fas fa-hourglass-half me-2 text-primary"></i> نبذة عن الكاتب قيد الإعداد.</p>
+                    {% endif %}
+                    
+                    <div class="mt-4 pt-3 border-top border-secondary opacity-75 text-end">
+                        <button type="button" class="btn btn-sm btn-link text-danger text-decoration-none p-0" data-bs-toggle="modal" data-bs-target="#reportModal" data-bs-model="authors.author" data-bs-id="{{ author.id }}">
+                            <i class="fas fa-flag me-1 ms-1"></i> إبلاغ عن الكاتب
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Author Books Section -->
+<div class="container pb-5 mb-5">
+    <div class="d-flex align-items-center mb-5 pb-3 border-bottom" style="border-color: rgba(248, 170, 39, 0.2) !important;">
+        <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3 ms-3" style="width: 60px; height: 60px;">
+            <i class="fas fa-book-open fa-2x text-primary"></i>
+        </div>
+        <h2 class="fw-bold m-0" style="color: var(--text-dark);">إصدارات الكاتب <span class="badge bg-primary text-dark rounded-pill ms-2 fs-5">{{ author.books.count }}</span></h2>
+    </div>
+    
+    <div class="row g-4">
+        {% for book in author.books.all %}
+        <!-- Horizontal Book Card -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm modern-author-book h-100 overflow-hidden" style="border-radius: 20px; background: var(--bg-cream);">
+                <div class="row g-0 h-100 align-items-center flex-row-reverse">
+                    <!-- Book Cover Side -->
+                    <div class="col-4 position-relative overflow-hidden h-100 author-book-img-wrapper" style="min-height: 220px;">
+                        {% if book.cover %}
+                            <img src="{{ book.cover.url }}" class="w-100 h-100 author-book-img" style="object-fit: cover; position: absolute; top: 0; left: 0;" alt="{{ book.title }}">
+                        {% else %}
+                            <div class="d-flex align-items-center justify-content-center w-100 h-100 author-book-img" style="position: absolute; top: 0; left: 0; background: rgba(0,0,0,0.05);">
+                                <i class="fas fa-book fa-3x" style="color: var(--text-muted);"></i>
+                            </div>
+                        {% endif %}
+                        <div class="author-book-overlay d-flex align-items-center justify-content-center">
+                            <a href="{% url 'books:detail' book.slug %}" class="btn btn-light rounded-circle shadow-lg d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-eye text-primary fs-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Book Details Side -->
+                    <div class="col-8">
+                        <div class="card-body p-4 d-flex flex-column justify-content-center h-100">
+                            <div class="book-rating mb-2">
+                                <i class="fas fa-star text-primary small"></i>
+                                <i class="fas fa-star text-primary small"></i>
+                                <i class="fas fa-star text-primary small"></i>
+                                <i class="fas fa-star text-primary small"></i>
+                                <i class="fas fa-star-half-alt text-primary small"></i>
+                            </div>
+                            <h4 class="fw-bold mb-2" style="font-size: 1.25rem; color: var(--text-dark);">{{ book.title }}</h4>
+                            {% if book.category %}
+                            <a href="{% url 'books:category_list' book.category.slug %}" class="text-decoration-none d-block mb-3 category-link" style="color: var(--text-muted-readable);">
+                                <i class="fas fa-layer-group me-2 ms-1 small text-primary"></i>{{ book.category.name }}
+                            </a>
+                            {% endif %}
+                            <div class="mt-auto d-flex align-items-center justify-content-between pt-2">
+                                {% if book.paperback_price or book.ebook_price %}
+                                    <div class="fw-bold text-success fs-5">
+                                        {% if book.paperback_price %}{{ book.paperback_price }}{% else %}{{ book.ebook_price }}{% endif %} <small class="fs-6" style="color: var(--text-muted);">ج.م</small>
+                                    </div>
+                                {% else %}
+                                    <div class="small" style="color: var(--text-muted);">قريباً</div>
+                                {% endif %}
+                                <a href="{% url 'books:detail' book.slug %}" class="btn btn-outline-primary btn-sm rounded-pill px-4 fw-bold author-book-btn">التفاصيل</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 100px; height: 100px;">
+                <i class="fas fa-book-reader fa-3x text-primary"></i>
+            </div>
+            <h3 class="fw-bold mb-3" style="color: var(--text-dark);">لا يوجد إصدارات حالياً</h3>
+            <p style="color: var(--text-muted-readable);">ترقبوا قريباً أحدث إبداعات الكاتب على دار الأديب.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}

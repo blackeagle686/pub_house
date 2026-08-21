@@ -1,0 +1,115 @@
+/* ==========================================================================
+   Book App Styles (List, Detail, Search, Category)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Book Detail Page
+   -------------------------------------------------------------------------- */
+.hero-blur-bg { filter: blur(40px) brightness(0.9); opacity: 0.7; }
+.fallback-bg { background: radial-gradient(circle at center, rgba(248,170,39,0.2) 0%, #ffffff 100%); }
+.hero-overlay { background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.95) 100%); }
+.hero-text { color: var(--text-dark); }
+.hero-text-muted { color: var(--text-muted-readable); }
+.hero-title { text-shadow: 0 4px 15px rgba(255,255,255,0.8); }
+.book-shadow { background-color: rgba(0,0,0,0.15); }
+.purchase-card { background: rgba(255,255,255,0.7); border: 1px solid rgba(248,170,39,0.3) !important; }
+.purchase-card-glow { background: radial-gradient(circle at top left, rgba(248,170,39,0.15) 0%, transparent 60%); }
+.price-pill { background: rgba(255,255,255,0.9); border: 1px solid rgba(248,170,39,0.2); border-radius: 20px; padding: 20px; text-align: center; flex: 1; min-width: 140px; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+.price-pill:hover { background: #fff; border-color: var(--primary-color); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(248,170,39,0.1); }
+.hero-breadcrumb { --bs-breadcrumb-divider-color: rgba(0,0,0,0.3); }
+.hero-breadcrumb a { color: var(--text-muted-readable); }
+.hero-breadcrumb a:hover { color: var(--primary-color); }
+.desc-card { background: var(--bg-cream); }
+.desc-border { border-color: rgba(248, 170, 39, 0.2) !important; }
+.border-end-md { border-left: 1px solid rgba(0,0,0,0.1) !important; border-right: none !important; }
+.book-hero-img { box-shadow: 0 30px 60px rgba(0,0,0,0.2); transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; transform: rotateY(-15deg) rotateX(10deg); }
+
+.hover-primary:hover { color: var(--primary-color) !important; border-color: var(--primary-color) !important; }
+.backdrop-blur { backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); }
+.book-cover-3d:hover .book-hero-img { transform: rotateY(0deg) rotateX(0deg) scale(1.05); }
+
+.btn-glow { animation: glowBtn 2s infinite alternate; }
+@keyframes glowBtn {
+    0% { box-shadow: 0 0 15px rgba(248,170,39,0.3); }
+    100% { box-shadow: 0 0 30px rgba(248,170,39,0.7); }
+}
+
+@media (max-width: 767px) {
+    .border-end-md { border-left: none !important; border-top: 1px solid rgba(0,0,0,0.1) !important; padding-top: 2rem !important; margin-top: 2rem !important; }
+}
+
+.rating-input label { transition: all 0.2s; }
+.rating-input label:hover,
+.rating-input label:hover ~ label,
+.rating-input input:checked ~ label {
+    color: var(--primary-color) !important;
+}
+.review-form-card { background-color: var(--white); }
+
+/* --------------------------------------------------------------------------
+   Book List Page
+   -------------------------------------------------------------------------- */
+.modern-book-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid rgba(248, 170, 39, 0.05); }
+.modern-book-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.08) !important; }
+.book-img-wrapper { position: relative; border-radius: 0 24px 24px 0; }
+.book-img { transition: transform 0.6s ease; }
+.modern-book-card:hover .book-img { transform: scale(1.1) rotate(2deg); }
+.book-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.4); opacity: 0; transition: all 0.4s ease; backdrop-filter: blur(2px); }
+.modern-book-card:hover .book-overlay { opacity: 1; }
+.book-overlay .btn { transform: scale(0.5); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.modern-book-card:hover .book-overlay .btn { transform: scale(1); }
+
+/* --------------------------------------------------------------------------
+   Book Search Page
+   -------------------------------------------------------------------------- */
+.transition-card { transition: all 0.3s ease; }
+.transition-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(248, 170, 39, 0.15) !important; }
+
+/* --------------------------------------------------------------------------
+   Category List Page
+   -------------------------------------------------------------------------- */
+.modern-category-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid rgba(248, 170, 39, 0.1) !important; }
+.modern-category-card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(248, 170, 39, 0.2) !important; background-color: var(--primary-color) !important; }
+.cat-icon-wrapper { transition: all 0.3s ease; }
+.modern-category-card:hover .cat-icon-wrapper { background-color: rgba(255, 255, 255, 0.2) !important; transform: scale(1.1); }
+.modern-category-card:hover .cat-icon-wrapper i { color: #111111 !important; }
+.modern-category-card:hover .cat-title { color: #111111 !important; }
+
+.cat-hero-title { color: var(--text-dark); }
+.cat-hero-desc { color: var(--text-muted-readable); }
+
+/* --------------------------------------------------------------------------
+   Utilities and Dark Theme Overrides
+   -------------------------------------------------------------------------- */
+.z-index-2 { z-index: 2; }
+.z-index-3 { z-index: 3; }
+
+[data-theme="dark"] .hero-blur-bg { filter: blur(60px) brightness(0.3); opacity: 1; }
+[data-theme="dark"] .fallback-bg { background: radial-gradient(circle at center, rgba(248,170,39,0.3) 0%, #111 100%); }
+[data-theme="dark"] .hero-overlay { background: linear-gradient(180deg, rgba(17,17,17,0.2) 0%, rgba(17,17,17,1) 100%); }
+[data-theme="dark"] .hero-title { color: #f8f9fa !important; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+[data-theme="dark"] .hero-subtitle { color: #eeeeee !important; }
+[data-theme="dark"] .book-shadow { background-color: #000; }
+[data-theme="dark"] .purchase-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1) !important; }
+[data-theme="dark"] .purchase-card-glow { background: radial-gradient(circle at top left, rgba(248,170,39,0.1) 0%, transparent 60%); }
+[data-theme="dark"] .price-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); box-shadow: none; }
+[data-theme="dark"] .price-pill:hover { background: rgba(248,170,39,0.1); border-color: var(--primary-color); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+[data-theme="dark"] .hero-breadcrumb { --bs-breadcrumb-divider-color: rgba(255,255,255,0.4); }
+[data-theme="dark"] .border-end-md { border-left: 1px solid rgba(255,255,255,0.1) !important; }
+[data-theme="dark"] .book-hero-img { box-shadow: 0 40px 80px rgba(0,0,0,0.8); }
+
+@media (max-width: 767px) {
+    [data-theme="dark"] .border-end-md { border-top: 1px solid rgba(255,255,255,0.1) !important; }
+}
+[data-theme="dark"] .review-form-card { background-color: #1e1e24 !important; }
+
+[data-theme="dark"] .modern-book-card:hover { box-shadow: 0 20px 40px rgba(248, 170, 39, 0.15) !important; }
+[data-theme="dark"] .bg-light { background-color: #2a2a30 !important; }
+[data-theme="dark"] .modern-search-form { background-color: #2a2a30 !important; }
+[data-theme="dark"] .modern-search-form input { color: #f8f9fa !important; }
+
+[data-theme="dark"] .modern-category-card:hover .cat-title,
+[data-theme="dark"] .modern-category-card:hover .cat-icon-wrapper i { color: #111111 !important; }
+[data-theme="dark"] .modern-category-card:hover .cat-icon-wrapper { background-color: rgba(17, 17, 17, 0.2) !important; }
+[data-theme="dark"] .cat-hero-title { color: #f8f9fa !important; }
+[data-theme="dark"] .cat-hero-desc { color: #eeeeee !important; }

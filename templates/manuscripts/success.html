@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}تم الإرسال - دار الأديب{% endblock %}
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card border-0 shadow-sm rounded-4 p-5">
+                <div class="mx-auto bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center mb-4" style="width: 100px; height: 100px;">
+                    <i class="fas fa-check fa-3x"></i>
+                </div>
+                <h2 class="fw-bold mb-3">تم استلام مخطوطتك بنجاح!</h2>
+                <p class="text-muted fs-5 mb-4">شكراً لثقتك بدار الأديب. سيتم تحويل عملك للجنة القراءة والمراجعة، وسنتواصل معك في أقرب وقت لإبلاغك بالنتيجة.</p>
+                
+                <a href="/" class="btn btn-primary rounded-pill px-5 py-2">العودة للرئيسية</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

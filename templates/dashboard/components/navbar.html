@@ -1,0 +1,21 @@
+            <div class="top-navbar mb-4">
+                <button class="toggle-btn" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="d-flex align-items-center flex-grow-1 mx-3" style="max-width: 400px;">
+                    <form method="GET" action="{% url 'dashboard:search' %}" class="w-100 d-flex bg-light rounded-pill px-3 py-1 align-items-center">
+                        <i class="fas fa-search text-muted"></i>
+                        <input type="text" name="q" class="form-control border-0 bg-transparent shadow-none" placeholder="ابحث عن كتاب، عميل، طلب، مخطوطة..." value="{{ request.GET.q }}">
+                        <button type="submit" class="d-none"></button>
+                    </form>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark text-decoration-none p-0 fs-5" id="themeToggle" title="تبديل المظهر">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <span class="text-muted d-none d-md-inline">أهلاً بك، <strong class="text-dark theme-text">{{ request.user.username }}</strong></span>
+                    <div class="bg-primary text-dark rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 45px; height: 45px; font-size: 1.2rem;">
+                        {{ request.user.username|make_list|first|upper }}
+                    </div>
+                </div>
+            </div>

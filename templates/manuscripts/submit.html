@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}قدم مخطوطتك - دار الأديب{% endblock %}
+{% block content %}
+<div class="container py-5 mt-2 position-relative">
+    <!-- Animated Background Circles -->
+    <div class="bg-circle circle-1" style="width: 300px; height: 300px; top: -50px; right: -50px;"></div>
+    <div class="bg-circle circle-2" style="width: 250px; height: 250px; bottom: 0; left: 0;"></div>
+    
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden position-relative" style="max-width: 1100px; margin: 0 auto; z-index: 2;">
+        <div class="row g-0">
+            <!-- Info Side -->
+            <div class="col-md-5 d-none d-md-block" style="background: url('/static/images/hero1.png') center/cover no-repeat; position: relative; min-height: 500px;">
+                <div class="position-absolute top-0 start-0 w-100 h-100 p-4 p-lg-5 d-flex flex-column justify-content-center text-white" style="background: linear-gradient(135deg, rgba(17,17,17,0.95), rgba(248, 170, 39, 0.85));">
+                    <i class="fas fa-feather-alt fa-3x mb-4 text-white opacity-75"></i>
+                    <h2 class="fw-bold mb-3">شاركنا إبداعك!</h2>
+                    <p class="fs-5 opacity-75 mb-4" style="line-height: 1.8;">نحن في دار الأديب نبحث دائماً عن الأصوات الجديدة والأفكار الاستثنائية. أرسل لنا مخطوطتك وسيقوم فريقنا بمراجعتها بكل اهتمام.</p>
+                    
+                    <ul class="list-unstyled mt-4">
+                        <li class="mb-3 d-flex align-items-center"><i class="fas fa-check-circle me-2 ms-2 text-white opacity-75"></i> مراجعة دقيقة من لجنة متخصصة</li>
+                        <li class="mb-3 d-flex align-items-center"><i class="fas fa-check-circle me-2 ms-2 text-white opacity-75"></i> رد سريع وشفاف</li>
+                        <li class="mb-3 d-flex align-items-center"><i class="fas fa-check-circle me-2 ms-2 text-white opacity-75"></i> طباعة فاخرة للمخطوطات المقبولة</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Form Side -->
+            <div class="col-md-7 p-4 p-md-5 bg-white">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold">نموذج التقديم</h3>
+                    <p class="text-muted">يرجى تعبئة كافة البيانات بدقة لسهولة التواصل</p>
+                </div>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        {% for field in form %}
+                            <div class="{% if field.name == 'idea' or field.name == 'title' or field.name == 'cover' or field.name == 'file' %}col-12{% else %}col-md-6{% endif %}">
+                                {{ field|as_crispy_field }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill mt-4 py-3 fw-bold fs-5 shadow-sm">إرسال المخطوطة <i class="fas fa-paper-plane ms-2"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}تسجيل الدخول - دار الأديب{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/account.css">
+{% endblock %}
+{% block content %}
+<div class="container py-5 mt-3">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden account-card">
+        <div class="row g-0">
+        <!-- Image Side (Left) -->
+        <div class="col-md-6 d-none d-md-flex flex-column justify-content-center align-items-center position-relative overflow-hidden account-sidebar">
+            <!-- Modern Glowing Background -->
+            <div class="position-absolute w-100 h-100 account-glow-bg"></div>
+            
+            <!-- Animated Background Circles -->
+            <div class="bg-circle circle-1"></div>
+            
+            <!-- Content (Glassmorphism card) -->
+            <div class="text-center position-relative p-4 mx-4 rounded-4 account-glass-card">
+                <img src="/static/images/hero2.png" alt="دار الأديب" class="img-fluid mb-4 account-hero-img">
+                
+                <h2 class="fw-bold text-white mb-3 account-title-font">مرحباً بعودتك!</h2>
+                <p class="text-white-50 px-3 account-desc-text">
+                    دار الأديب، بوابتك نحو عالم المعرفة والإبداع. سجل دخولك لاستكمال رحلتك الشيقة في عالم القراءة.
+                </p>
+                
+                <div class="d-flex justify-content-center gap-4 mt-4 pt-4 border-top border-secondary border-opacity-25">
+                    <div class="text-center">
+                        <i class="fas fa-book-reader fs-4 text-primary mb-2"></i>
+                        <span class="d-block text-white-50 small">مكتبة ضخمة</span>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-truck fs-4 text-primary mb-2"></i>
+                        <span class="d-block text-white-50 small">توصيل سريع</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <!-- Form Side (Right in RTL) -->
+            <div class="col-md-6 p-4 p-md-5 d-flex flex-column justify-content-center bg-white">
+                <div class="text-center mb-4">
+                    <img src="/static/images/hero1.png" alt="دار الأديب" style="max-height: 80px;" class="mb-3">
+                    <h3 class="fw-bold">مرحباً بعودتك</h3>
+                    <p class="mb-3">قم بتسجيل الدخول لمتابعة طلباتك</p>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill mt-3 py-2 fw-bold shadow-sm">تسجيل الدخول</button>
+                </form>
+                <div class="text-center mt-4">
+                    <p class="mb-0">ليس لديك حساب؟ <a href="{% url 'accounts:register' %}" class="text-primary text-decoration-none fw-bold">حساب جديد</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

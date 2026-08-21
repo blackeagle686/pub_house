@@ -1,0 +1,60 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <h2 class="fw-bold mb-0">إدارة المؤلفين</h2>
+    <form method="GET" class="d-flex shadow-sm rounded-pill bg-white overflow-hidden flex-grow-1 mx-md-4" style="max-width: 400px;">
+        <input type="text" name="q" class="form-control border-0 shadow-none ps-3 bg-transparent" placeholder="بحث باسم المؤلف..." value="{{ request.GET.q }}">
+        <button class="btn btn-primary border-0 px-4 fw-bold" type="submit"><i class="fas fa-search"></i></button>
+    </form>
+    <a href="{% url 'dashboard:author_add' %}" class="btn btn-primary rounded-pill px-4"><i class="fas fa-plus me-2"></i> إضافة مؤلف جديد</a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <table class="table table-hover mb-0 align-middle">
+        <thead class="bg-light">
+            <tr>
+                <th class="p-3">ID</th>
+                <th class="p-3">صورة</th>
+                <th class="p-3">الاسم</th>
+                <th class="p-3">الحالة</th>
+                <th class="p-3 text-center">إجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for author in authors %}
+            <tr>
+                <td class="p-3 text-muted">#{{ author.id }}</td>
+                <td class="p-3">
+                    {% if author.photo %}
+                        <img src="{{ author.photo.url }}" class="rounded-circle object-fit-cover shadow-sm" style="width: 40px; height: 40px;">
+                    {% else %}
+                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;"><i class="fas fa-user"></i></div>
+                    {% endif %}
+                </td>
+                <td class="p-3 fw-bold">{{ author.name }}</td>
+                <td class="p-3">
+                    {% if author.is_active %}
+                        <span class="badge bg-success rounded-pill px-3">نشط</span>
+                    {% else %}
+                        <span class="badge bg-danger rounded-pill px-3">موقوف</span>
+                    {% endif %}
+                </td>
+                <td class="p-3 text-center">
+                    <form action="{% url 'dashboard:author_toggle_status' author.id %}" method="POST" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm {% if author.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %} rounded-circle me-1" title="{% if author.is_active %}إيقاف{% else %}تفعيل{% endif %}">
+                            <i class="fas {% if author.is_active %}fa-ban{% else %}fa-check{% endif %}"></i>
+                        </button>
+                    </form>
+                    <a href="{% url 'dashboard:author_edit' author.id %}" class="btn btn-sm btn-outline-dark rounded-circle me-1" title="تعديل"><i class="fas fa-edit"></i></a>
+                    <a href="{% url 'dashboard:author_delete' author.id %}" class="btn btn-sm btn-outline-danger rounded-circle" title="حذف"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="p-4 text-center text-muted">لا يوجد مؤلفين.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include 'dashboard/components/pagination.html' %}
+{% endblock %}

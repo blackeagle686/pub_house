@@ -1,0 +1,167 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block content %}
+<h2 class="mb-4 fw-bold">نظرة عامة والتحليلات</h2>
+
+<!-- KPI Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card bg-white border-0 shadow-sm rounded-4 p-3 text-center h-100">
+            <i class="fas fa-coins fa-2x mb-2 text-success"></i>
+            <h4 class="fw-bold mb-1">{{ total_revenue }} <span class="fs-6">جنيه</span></h4>
+            <p class="text-muted mb-0 small">إجمالي المبيعات المكتملة</p>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-white border-0 shadow-sm rounded-4 p-3 text-center h-100">
+            <i class="fas fa-shopping-cart fa-2x mb-2" style="color: var(--primary-color);"></i>
+            <h4 class="fw-bold mb-1">{{ total_orders }}</h4>
+            <p class="text-muted mb-0 small">إجمالي الطلبات</p>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-white border-0 shadow-sm rounded-4 p-3 text-center h-100">
+            <i class="fas fa-book fa-2x mb-2 text-info"></i>
+            <h4 class="fw-bold mb-1">{{ total_books }}</h4>
+            <p class="text-muted mb-0 small">إجمالي الكتب</p>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-white border-0 shadow-sm rounded-4 p-3 text-center h-100">
+            <i class="fas fa-exclamation-triangle fa-2x mb-2 text-danger"></i>
+            <h4 class="fw-bold mb-1">{{ out_of_stock_books }}</h4>
+            <p class="text-muted mb-0 small">كتب نفدت من المخزون</p>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-white border-0 shadow-sm rounded-4 p-3 text-center h-100">
+            <i class="fas fa-users fa-2x mb-2 text-primary"></i>
+            <h4 class="fw-bold mb-1">{{ total_users }}</h4>
+            <p class="text-muted mb-0 small">المستخدمين المسجلين</p>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-white border-0 shadow-sm rounded-4 p-3 text-center h-100">
+            <i class="fas fa-user-tie fa-2x mb-2 text-secondary"></i>
+            <h4 class="fw-bold mb-1">{{ total_authors }}</h4>
+            <p class="text-muted mb-0 small">المؤلفين</p>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-white border-0 shadow-sm rounded-4 p-3 text-center h-100">
+            <i class="fas fa-feather-alt fa-2x mb-2 text-warning"></i>
+            <h4 class="fw-bold mb-1">{{ total_manuscripts }}</h4>
+            <p class="text-muted mb-0 small">المخطوطات المستلمة</p>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-white border-0 shadow-sm rounded-4 p-3 text-center h-100">
+            <i class="fas fa-flag fa-2x mb-2 text-danger"></i>
+            <h4 class="fw-bold mb-1">{{ total_reports }}</h4>
+            <p class="text-muted mb-0 small">إجمالي البلاغات</p>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card bg-white border-0 shadow-sm rounded-4 p-3 h-100">
+            <h5 class="fw-bold mb-3 text-center">توزيع حالات الطلبات</h5>
+            <div style="position: relative; height:250px; width:100%">
+                <canvas id="ordersChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-transparent border-0 pt-4 pb-0">
+                <h5 class="fw-bold mb-0">أحدث الطلبات</h5>
+            </div>
+            <div class="card-body p-0 mt-3">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="p-3">رقم الطلب</th>
+                                <th class="p-3">العميل</th>
+                                <th class="p-3">التاريخ</th>
+                                <th class="p-3">الإجمالي</th>
+                                <th class="p-3">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                            <tr>
+                                <td class="p-3">#{{ order.id }}</td>
+                                <td class="p-3">{{ order.user.username }}</td>
+                                <td class="p-3">{{ order.created_at|date:"Y-m-d" }}</td>
+                                <td class="p-3 fw-bold text-success">{{ order.total_price }} ج.م</td>
+                                <td class="p-3">
+                                    <span class="badge {% if order.status == 'completed' %}bg-success{% elif order.status == 'cancelled' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                                        {{ order.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="p-4 text-center text-muted">لا توجد طلبات حديثة</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js and Custom Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Prepare data from Django context
+        const labels = {{ orders_status_labels|safe }};
+        const data = {{ orders_status_data|safe }};
+        
+        const ctx = document.getElementById('ordersChart').getContext('2d');
+        const ordersChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: [
+                        'rgba(248, 170, 39, 0.8)', // Warning/Pending
+                        'rgba(40, 167, 69, 0.8)',  // Success/Completed
+                        'rgba(220, 53, 69, 0.8)',  // Danger/Cancelled
+                        'rgba(23, 162, 184, 0.8)', // Info
+                        'rgba(108, 117, 125, 0.8)' // Secondary
+                    ],
+                    borderWidth: 1,
+                    borderColor: 'rgba(255,255,255,0.1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: 'Tajawal, sans-serif' },
+                            color: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#e0e0e0' : '#333'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Update chart colors when theme toggles
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            setTimeout(() => {
+                const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+                ordersChart.options.plugins.legend.labels.color = isDark ? '#e0e0e0' : '#333';
+                ordersChart.update();
+            }, 100);
+        });
+    });
+</script>
+{% endblock %}

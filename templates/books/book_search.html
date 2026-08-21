@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}نتائج البحث - دار الأديب{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/book.css">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5 text-center">
+        <div class="col-md-8 mx-auto">
+            <h1 class="mb-4">نتائج البحث عن "{{ query }}"</h1>
+            <form action="{% url 'books:search' %}" method="GET" class="modern-search-form mx-auto d-flex align-items-center bg-white rounded-pill p-2 shadow-lg mt-4" style="max-width: 700px;">
+                <div class="search-icon text-muted ps-3 pe-2 fs-5">
+                    <i class="fas fa-search"></i>
+                </div>
+                <input type="text" name="q" class="form-control border-0 shadow-none bg-transparent fs-5" placeholder="ابحث مرة أخرى..." value="{{ query }}">
+                <button type="submit" class="btn btn-primary rounded-pill px-4 ms-2 fw-bold fs-5">بحث</button>
+            </form>
+        </div>
+    </div>
+
+    {% if books %}
+    <div class="row g-4">
+        {% for book in books %}
+        <div class="col-md-4 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm transition-card" style="border-radius: 15px; overflow: hidden;">
+                {% if book.cover %}
+                    <img src="{{ book.cover.url }}" class="card-img-top" style="height: 300px; object-fit: cover;" alt="{{ book.title }}">
+                {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                        <i class="fas fa-book fa-4x text-muted"></i>
+                    </div>
+                {% endif %}
+                <div class="card-body text-center p-3">
+                    <h5 class="card-title fw-bold mb-1 text-dark">{{ book.title }}</h5>
+                    <a href="{% url 'authors:detail' book.author.slug %}" class="text-muted text-decoration-none small d-block mb-1">{{ book.author.name }}</a>
+                    <div class="mt-2">
+                        <a href="{% url 'books:detail' book.slug %}" class="btn btn-outline-primary w-100 rounded-pill">عرض التفاصيل</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-search fa-5x text-muted mb-4 opacity-50"></i>
+        <h3 class="text-muted">عفواً، لم نجد أي نتائج تطابق بحثك.</h3>
+        <p>حاول البحث بكلمات مختلفة أو راجع الأقسام.</p>
+        <a href="{% url 'books:list' %}" class="btn btn-primary mt-3 px-4">تصفح كل الكتب</a>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}
